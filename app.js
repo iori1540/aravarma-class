@@ -164,9 +164,39 @@ const PG = [
   ['sust', 'Sustituye', 7], ['texto', 'Texto', 6], ['tabla', 'Tabla', 6], ['prac', 'Practiquemos', 1], ['ruleta', 'Ruleta', RULETA.length],
 ];
 let score = {};
+/* Etiquetas de felicitación: salen cuando aciertas y al completar la actividad */
+const PRAISE = [['muybien', 'Muy bien'], ['felicitaciones', 'Felicitaciones'], ['buentrabajo', 'Buen trabajo'], ['lolograste', 'Lo lograste']];
+const PRAISE_END = [['excelente', 'Excelente'], ['terminada', 'Actividad terminada']];
+const ACT_BOX = { ordena: '#act-ordena', sopa: '#act-sopa', sd: '#act-sd', dial: '#act-dialogos', sust: '#act-sustituye', texto: '#act-texto', tabla: '#act-texto', prac: '#practice-mount', ruleta: '#wheel-mount' };
+let praiseTimer = null, praiseN = 0, endN = 0;
+function showPraise([img, text], big) {
+  let el = $('#praise');
+  if (!el) { el = h('div', { id: 'praise', class: 'praise', role: 'status', 'aria-live': 'polite' }); document.body.append(el); }
+  el.className = 'praise' + (big ? ' big' : '');
+  el.replaceChildren(h('img', { src: `images/etiqueta-${img}.webp`, alt: text }), h('span', { class: 'sr-only' }, text));
+  void el.offsetWidth; // reinicia la animación
+  el.classList.add('show');
+  if (state.sound) speak(text);
+  clearTimeout(praiseTimer);
+  praiseTimer = setTimeout(() => el.classList.remove('show'), big ? 2800 : 1700);
+}
+function markDone(id, done) {
+  const box = $(ACT_BOX[id] || 'body'); const card = box && box.closest('.card');
+  const head = card && ($('.act-head h4', card) || $('.flip-head b', card));
+  if (!head) return;
+  const key = 'done-' + id; let tag = head.querySelector('.' + key);
+  if (done && !tag) head.append(h('img', { class: 'done-tag ' + key, src: 'images/etiqueta-excelente.webp', alt: 'Excelente' }));
+  if (!done && tag) tag.remove();
+}
 function setScore(id, got) {
+  const before = score[id] || 0, total = (PG.find(p => p[0] === id) || [])[2];
   score[id] = got;
   renderProgress();
+  markDone(id, total && got === total);
+  if (got > before && total) {
+    if (got === total) showPraise(PRAISE_END[endN++ % PRAISE_END.length], true);
+    else showPraise(PRAISE[praiseN++ % PRAISE.length], false);
+  }
 }
 function renderProgress() {
   const box = $('#progress');
