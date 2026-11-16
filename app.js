@@ -1105,26 +1105,6 @@ function initGreetings() {
 }
 
 /* ============================================================
-   Video de los sonidos de las letras (recortado con inicio y fin)
-   Cambia data-start y data-end (en segundos) en index.html.
-   ============================================================ */
-function initVideo() {
-  const box = $('#video-player');
-  if (!box) return;
-  const id = box.dataset.video, start = parseInt(box.dataset.start, 10) || 0, end = parseInt(box.dataset.end, 10) || 0;
-  const q = new URLSearchParams({ start: String(start), rel: '0', modestbranding: '1' });
-  if (end > start) q.set('end', String(end));
-  $('.player-frame', box).replaceChildren(h('iframe', {
-    src: `https://www.youtube.com/embed/${id}?${q}`,
-    title: 'Video: el sonido de las letras, de la A a la Z',
-    loading: 'lazy', allowfullscreen: true,
-    allow: 'accelerometer; encrypted-media; picture-in-picture',
-    referrerpolicy: 'strict-origin-when-cross-origin',
-  }));
-  $('#video-link').href = `https://www.youtube.com/watch?v=${id}&t=${start}s`;
-}
-
-/* ============================================================
    Pestañas, botones del panel y opciones
    ============================================================ */
 const TABS = ['bas-01', 'bas-02', 'bas-03'];
@@ -1183,7 +1163,7 @@ function initAll() {
   initAlphabet(); initPractice(); initSpell(); initWheel();
   initOrdena(); initSopa(); initSD(); initDialogos();
   initBoard(); initSustituye(); initTexto();
-  initGreetings(); initVideo();
+  initGreetings();
   renderProgress();
 }
 

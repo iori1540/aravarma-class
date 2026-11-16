@@ -708,3 +708,5 @@ input, select { font: inherit; color: inherit; }
 .bear-say p b { color: #6a43c9; }
 .btn.go { text-decoration: none; display: inline-flex; }
 @media (prefers-reduced-motion: reduce) { .bear, .pr-star { animation: none; } }
+
+.player video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #fff; }
