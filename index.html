@@ -61,168 +61,21 @@
 
 <main class="wrap">
 
-<!-- ============ TABLERO (fila 1) ============ -->
-<section class="board-grid" id="tablero" aria-label="Tablero de la clase">
-
-  <!-- Button pack + ingreso -->
-  <div class="panel p-pack" id="panel-pack">
-    <h2 class="p-title">Panel de botones</h2>
-    <div class="pill-rows">
-      <div class="pill-row">
-        <button class="pill" type="button" data-act="exit">Salir</button>
-        <button class="pill" type="button" data-act="copy" title="Copiar mi progreso">Copiar</button>
-        <button class="pill" type="button" data-act="cancel">Cancelar</button>
-      </div>
-      <div class="pill-row">
-        <button class="pill" type="button" data-act="start">Iniciar</button>
-        <button class="pill" type="button" data-act="resume">Continuar</button>
-        <button class="pill" type="button" data-act="restart">Reiniciar</button>
-        <button class="pill" type="button" data-act="options">Opciones</button>
-      </div>
-    </div>
-    <div class="login-zone">
-      <form class="login" id="login-form" autocomplete="off">
-        <h3 class="login-title">Ingresa</h3>
-        <label class="login-label" for="u-name">Nombre</label>
-        <input class="login-input" id="u-name" type="text" maxlength="24" placeholder="Me llamo…">
-        <label class="login-label" for="u-country">País</label>
-        <input class="login-input" id="u-country" type="text" maxlength="24" placeholder="Soy de…">
-        <button class="sr-only" type="submit">Ingresar</button>
-      </form>
-      <div class="round-grid" role="group" aria-label="Navegación">
-        <button class="round" type="button" data-act="home" aria-label="Inicio" title="Inicio"><svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8M6 10v10h4v-6h4v6h4V10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="round" type="button" data-act="list" aria-label="Lista de clases" title="Lista de clases"><svg viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.6" fill="currentColor"/><circle cx="4.5" cy="12" r="1.6" fill="currentColor"/><circle cx="4.5" cy="18" r="1.6" fill="currentColor"/></svg></button>
-        <button class="round" type="button" data-act="next" aria-label="Clase siguiente" title="Clase siguiente"><svg viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="round" type="button" data-act="prev" aria-label="Clase anterior" title="Clase anterior"><svg viewBox="0 0 24 24"><path d="M20 12H4m6-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="round" type="button" data-act="spin" aria-label="Girar la ruleta" title="Girar la ruleta"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
-        <button class="round" type="button" data-act="sound" aria-label="Sonido activado" aria-pressed="true" title="Sonido"><svg viewBox="0 0 24 24" id="ico-sound"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
-      </div>
-    </div>
-    <p class="greeting" id="greeting" role="status" aria-live="polite"></p>
-  </div>
-
-  <!-- Dibujo central -->
-  <div class="panel p-scene" id="panel-scene">
-    <svg viewBox="0 0 400 340" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Un niño se despierta contento por la mañana y abre los brazos frente a la ventana soleada">
-      <rect width="400" height="340" fill="#d8ecb0"/>
-      <rect y="250" width="400" height="90" fill="#c9e09a"/>
-      <!-- reloj -->
-      <circle cx="62" cy="72" r="38" fill="#fff" stroke="#c98a4d" stroke-width="8"/>
-      <g stroke="#5b1d5e" stroke-width="3" stroke-linecap="round">
-        <path d="M62 72 L62 50"/><path d="M62 72 L78 80"/>
-        <path d="M62 40v4M62 100v4M32 72h4M88 72h4" stroke-width="2.5"/>
-      </g>
-      <circle cx="62" cy="72" r="3.5" fill="#5b1d5e"/>
-      <!-- ventana -->
-      <rect x="150" y="28" width="170" height="160" rx="6" fill="#c5e8ff" stroke="#d99a5b" stroke-width="9"/>
-      <g>
-        <circle cx="240" cy="92" r="26" fill="#ffd84a" stroke="#f0a91f" stroke-width="3"/>
-        <g stroke="#f0a91f" stroke-width="4" stroke-linecap="round">
-          <path d="M240 52v10M240 122v10M200 92h10M270 92h10M212 64l7 7M261 113l7 7M268 64l-7 7M219 113l-7 7"/>
-        </g>
-        <path d="M154 160 C180 140 200 150 222 158 C250 146 280 144 316 160 V184 H154Z" fill="#9ed36b"/>
-        <path d="M154 172 C190 160 230 172 316 168 V184 H154Z" fill="#7cc15a"/>
-        <ellipse cx="190" cy="52" rx="18" ry="8" fill="#fff"/><ellipse cx="202" cy="48" rx="12" ry="8" fill="#fff"/>
-      </g>
-      <path d="M235 28 V188 M150 108 H320" stroke="#d99a5b" stroke-width="5" opacity=".9"/>
-      <!-- cortinas -->
-      <path d="M140 20 H175 C172 70 176 130 170 196 H140Z" fill="#37b79f" stroke="#1d8a76" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M152 24 C150 80 154 140 150 194 M163 24 C161 80 165 140 162 194" stroke="#1d8a76" stroke-width="2" fill="none" opacity=".6"/>
-      <path d="M330 20 H295 C298 70 294 130 300 196 H330Z" fill="#37b79f" stroke="#1d8a76" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M318 24 C320 80 316 140 320 194 M307 24 C309 80 305 140 308 194" stroke="#1d8a76" stroke-width="2" fill="none" opacity=".6"/>
-      <rect x="132" y="16" width="206" height="9" rx="4.5" fill="#d99a5b"/>
-      <!-- almohada -->
-      <rect x="40" y="188" width="116" height="66" rx="22" transform="rotate(-6 98 221)" fill="#bcd8ff" stroke="#7aa6e0" stroke-width="3"/>
-      <!-- cuerpo y brazos -->
-      <path d="M172 252 C168 214 178 200 210 200 C242 200 252 214 248 252Z" fill="#b8e286" stroke="#7fb94b" stroke-width="3"/>
-      <path d="M180 214 C158 196 150 170 146 150" stroke="#b8e286" stroke-width="22" stroke-linecap="round" fill="none"/>
-      <path d="M240 214 C262 196 270 170 274 150" stroke="#b8e286" stroke-width="22" stroke-linecap="round" fill="none"/>
-      <circle cx="145" cy="142" r="13" fill="#ffe0c7" stroke="#e9b995" stroke-width="2"/>
-      <circle cx="275" cy="142" r="13" fill="#ffe0c7" stroke="#e9b995" stroke-width="2"/>
-      <!-- cabeza -->
-      <circle cx="210" cy="168" r="40" fill="#ffe0c7" stroke="#e9b995" stroke-width="3"/>
-      <path d="M170 164 C166 126 200 118 214 128 C228 116 258 124 250 164 C240 146 226 146 210 142 C196 148 180 148 170 164Z" fill="#f0662b" stroke="#c8441a" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M184 132 l-8 -16 l16 8 M206 122 l-2 -18 l12 14 M232 124 l6 -16 l6 18" fill="#f0662b" stroke="#c8441a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-      <path d="M190 166 q7 -9 14 0 M216 166 q7 -9 14 0" fill="none" stroke="#5b1d5e" stroke-width="3.5" stroke-linecap="round"/>
-      <path d="M198 178 C200 200 222 200 224 178Z" fill="#c23a55" stroke="#5b1d5e" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M205 188 C209 193 215 193 218 188" fill="#ff8aa0"/>
-      <circle cx="186" cy="180" r="6" fill="#ff9ab8" opacity=".7"/><circle cx="236" cy="180" r="6" fill="#ff9ab8" opacity=".7"/>
-      <!-- cobija -->
-      <path d="M52 246 C56 232 80 230 110 236 L330 236 C352 236 360 248 358 270 L358 322 H52Z" fill="#37b79f" stroke="#1d8a76" stroke-width="3"/>
-      <g stroke="#9be3d3" stroke-width="2.2" opacity=".85">
-        <path d="M95 240V322M140 238V322M185 238V322M230 238V322M275 238V322M320 238V322"/>
-        <path d="M54 264H358M54 290H358"/>
-      </g>
-    </svg>
-  </div>
-
-  <!-- Alfabeto -->
-  <div class="panel p-alpha" id="panel-alpha">
-    <svg class="bf bf-s1" aria-hidden="true"><use href="#butterfly"/></svg>
-    <svg class="bf bf-s2" aria-hidden="true"><use href="#butterfly"/></svg>
-    <h2 class="banner">El alfabeto español</h2>
-    <div class="alpha-grid" id="alpha-grid" role="group" aria-label="Letras del alfabeto"></div>
-    <p class="alpha-caption" id="alpha-caption" role="status" aria-live="polite">Toca una letra para ver y escuchar su nombre.</p>
-    <svg class="tulip tu-a1" aria-hidden="true"><use href="#tulip"/></svg>
-    <svg class="tulip tu-a2" aria-hidden="true"><use href="#tulip"/></svg>
-  </div>
-</section>
-
-<!-- ============ TABLERO (fila 2) ============ -->
-<section class="board-grid row2" aria-label="Actividades del tablero">
-
-  <div class="panel p-sound" id="panel-sound">
-    <h2 class="banner small">2. El sonido de las letras</h2>
-    <a class="player" href="https://www.youtube.com/watch?v=iMxAw5OLF5g&amp;t=62s" target="_blank" rel="noopener">
-      <svg viewBox="0 0 320 190" aria-hidden="true">
-        <rect width="320" height="190" fill="#bfe6ff"/>
-        <ellipse cx="60" cy="40" rx="34" ry="14" fill="#fff"/><ellipse cx="90" cy="34" rx="24" ry="12" fill="#fff"/>
-        <ellipse cx="250" cy="48" rx="30" ry="12" fill="#fff"/>
-        <path d="M60 130 A100 100 0 0 1 260 130" fill="none" stroke="#ff7eb3" stroke-width="9"/>
-        <path d="M70 130 A90 90 0 0 1 250 130" fill="none" stroke="#ffd36e" stroke-width="9"/>
-        <path d="M80 130 A80 80 0 0 1 240 130" fill="none" stroke="#8fe0a8" stroke-width="9"/>
-        <path d="M90 130 A70 70 0 0 1 230 130" fill="none" stroke="#8cc8ff" stroke-width="9"/>
-        <rect y="140" width="320" height="50" fill="#8fd47e"/>
-        <ellipse cx="260" cy="148" rx="60" ry="14" fill="#7cc66b"/>
-        <text x="62" y="152" font-family="Lilita One, sans-serif" font-size="78" fill="#ff8fc4" stroke="#fff" stroke-width="6" paint-order="stroke" text-anchor="middle">A</text>
-        <text x="262" y="152" font-family="Lilita One, sans-serif" font-size="78" fill="#ffc94d" stroke="#fff" stroke-width="6" paint-order="stroke" text-anchor="middle">B</text>
-        <circle cx="160" cy="92" r="34" fill="#ff5fae" stroke="#fff" stroke-width="6"/>
-        <path d="M150 74v36l30-18z" fill="#fff"/>
-      </svg>
-      <span class="player-bar"><span>Ver el video en YouTube</span><span aria-hidden="true">↗</span></span>
-    </a>
-  </div>
-
-  <div class="panel p-practice" id="panel-practice">
-    <h2 class="banner small">3. Practiquemos</h2>
-    <div id="practice-mount"></div>
-  </div>
-
-  <div class="panel p-spell" id="panel-spell">
-    <h2 class="banner small">4. Deletrea</h2>
-    <div id="spell-mount"></div>
-  </div>
-
-  <div class="panel p-wheel" id="panel-wheel">
-    <h2 class="banner small">Ruleta</h2>
-    <div id="wheel-mount"></div>
-  </div>
-</section>
-
 <!-- ============ UNIDAD 1 ============ -->
 <section class="unit" id="unidad" aria-labelledby="unit-title">
   <div class="unit-head">
     <h2 id="unit-title" class="unit-title">Unidad 1. Primeros pasos en español</h2>
-    <div class="progress" id="progress" aria-label="Mi progreso"></div>
+    <button class="btn sm" id="sound-toggle" type="button" aria-pressed="true">Sonido: sí</button>
   </div>
+  <div class="progress" id="progress" aria-label="Mi progreso"></div>
 
   <div class="tabs" role="tablist" aria-label="Clases de la unidad">
-    <button class="tab" role="tab" id="tab-bas-01" data-tab="bas-01" aria-controls="lesson-bas-01" type="button"><b>BAS-01</b> Saludos y presentaciones</button>
-    <button class="tab" role="tab" id="tab-bas-02" data-tab="bas-02" aria-controls="lesson-bas-02" type="button"><b>BAS-02</b> El alfabeto y la pronunciación</button>
-    <button class="tab" role="tab" id="tab-bas-03" data-tab="bas-03" aria-controls="lesson-bas-03" type="button"><b>BAS-03</b> Pronombres</button>
+    <button class="tab" role="tab" id="tab-bas-01" data-tab="bas-01" aria-controls="lesson-bas-01" type="button"><b>Básico 1</b> Saludos y presentaciones</button>
+    <button class="tab" role="tab" id="tab-bas-02" data-tab="bas-02" aria-controls="lesson-bas-02" type="button"><b>Básico 2</b> El alfabeto y la pronunciación</button>
+    <button class="tab" role="tab" id="tab-bas-03" data-tab="bas-03" aria-controls="lesson-bas-03" type="button"><b>Básico 3</b> Pronombres</button>
   </div>
 
-  <!-- ---------- BAS-01 ---------- -->
+  <!-- ---------- BÁSICO 1 ---------- -->
   <article class="lesson" id="lesson-bas-01" role="tabpanel" aria-labelledby="tab-bas-01">
     <div class="card lead">
       <h3>Saludos y presentaciones</h3>
@@ -252,12 +105,13 @@
     <div class="card">
       <h3>Saludos</h3>
       <p>Expresión que usamos para iniciar o cerrar un contacto con otra persona y mostrar respeto o afecto.</p>
-      <div class="daytime" aria-label="Saludos según el momento del día">
-        <div class="dt dt-hola"><span class="dt-pic" aria-hidden="true">👋</span><strong>Hola</strong><small>a cualquier hora</small></div>
-        <div class="dt dt-dias"><span class="dt-pic" aria-hidden="true">☀️</span><strong>Buenos días</strong><small>por la mañana, hasta el mediodía</small></div>
-        <div class="dt dt-tardes"><span class="dt-pic" aria-hidden="true">🌇</span><strong>Buenas tardes</strong><small>del mediodía hasta las 19:00 o 20:00</small></div>
-        <div class="dt dt-noches"><span class="dt-pic" aria-hidden="true">🌙</span><strong>Buenas noches</strong><small>al atardecer y de noche</small></div>
+      <div class="daytime" role="group" aria-label="Saludos según el momento del día">
+        <button class="dt dt-hola" type="button" data-g="hola" aria-pressed="false"><span class="dt-pic" aria-hidden="true">👋</span><strong>Hola</strong><small>a cualquier hora</small></button>
+        <button class="dt dt-dias" type="button" data-g="dias" aria-pressed="false"><span class="dt-pic" aria-hidden="true">☀️</span><strong>Buenos días</strong><small>por la mañana, hasta el mediodía</small></button>
+        <button class="dt dt-tardes" type="button" data-g="tardes" aria-pressed="false"><span class="dt-pic" aria-hidden="true">🌇</span><strong>Buenas tardes</strong><small>del mediodía hasta las 19:00 o 20:00</small></button>
+        <button class="dt dt-noches" type="button" data-g="noches" aria-pressed="false"><span class="dt-pic" aria-hidden="true">🌙</span><strong>Buenas noches</strong><small>al atardecer y de noche</small></button>
       </div>
+      <div class="greet-stage" id="greet-stage" aria-live="polite"></div>
       <div class="vocab">
         <div class="vbox"><h4>Despedida</h4><ul><li>Hasta luego</li><li>Hasta pronto</li><li>Adiós</li><li>Chau</li><li>Nos vemos</li></ul></div>
         <div class="vbox"><h4>Nos presentamos</h4><ul><li>Me llamo Andrea</li><li>Yo soy Rocío</li></ul></div>
@@ -266,11 +120,11 @@
     </div>
 
     <div class="card">
-      <h3>Saludos formales</h3>
+      <h3>Saludos formales <span class="tag tag-f big">Formal · usted</span></h3>
       <p>Se utilizan con personas desconocidas, autoridades, personas mayores o en situaciones que requieren un trato de respeto. El saludo suele ir acompañado del tratamiento de «usted».</p>
       <div class="scroll-x">
-      <table class="t">
-        <thead><tr><th>Saludo</th><th>Contexto y notas</th></tr></thead>
+      <table class="t t-formal">
+        <thead><tr><th>Saludo</th><th>Contexto</th></tr></thead>
         <tbody>
           <tr><td>Buenos días</td><td>Se usa por la mañana, generalmente hasta el mediodía. Es apropiado en casi cualquier situación formal.</td></tr>
           <tr><td>Buenas tardes</td><td>Se usa desde el mediodía hasta el atardecer (aproximadamente hasta las 19:00 o 20:00).</td></tr>
@@ -282,15 +136,15 @@
         </tbody>
       </table>
       </div>
-      <p class="note"><b>Nota:</b> Los saludos por la mañana, tarde y noche («Buenos días», «Buenas tardes», «Buenas noches») pueden ser tanto formales como informales. Lo que los hace formales en la práctica es el uso de «usted» en la pregunta que les sigue (por ejemplo, «Buenos días, ¿cómo está usted?»).</p>
+      <p class="note rosalila"><b>Nota:</b> Los saludos por la mañana, tarde y noche («Buenos días», «Buenas tardes», «Buenas noches») pueden ser tanto formales como informales. Lo que los hace formales en la práctica es el uso de «usted» en la pregunta que les sigue (por ejemplo, «Buenos días, ¿cómo está usted?»).</p>
     </div>
 
     <div class="card">
-      <h3>Saludos informales</h3>
+      <h3>Saludos informales <span class="tag tag-i big">Informal · tú</span></h3>
       <p>Se emplean con amigos, familiares, compañeros de trabajo cercanos o personas de confianza y de edad similar. Se usa el pronombre «tú».</p>
       <div class="scroll-x">
-      <table class="t">
-        <thead><tr><th>Saludo</th><th>Contexto y notas</th></tr></thead>
+      <table class="t t-informal">
+        <thead><tr><th>Saludo</th><th>Contexto</th></tr></thead>
         <tbody>
           <tr><td>¡Hola!</td><td>Es el saludo más común y versátil en español. Se puede usar a cualquier hora del día en contextos informales.</td></tr>
           <tr><td>¿Qué tal?</td><td>Una forma muy frecuente y relajada de preguntar «¿cómo estás?».</td></tr>
@@ -302,31 +156,35 @@
         </tbody>
       </table>
       </div>
-      <p class="note"><b>Nota cultural:</b> En varios países de Latinoamérica, los saludos informales incluyen localismos muy característicos, como «¿Quiubo?» (Colombia), «¿Pura vida?» (Costa Rica) o «¿Qué fue?» (México).</p>
-      <div class="summary">
-        <h4>Resumen</h4>
-        <p>La clave está en la relación y el pronombre:</p>
-        <p><span class="tag tag-f">Formal</span> «Buenos días, ¿cómo está usted?» Usas <b>usted</b>, hay distancia o respeto.</p>
-        <p><span class="tag tag-i">Informal</span> «¡Hola! ¿Qué tal, cómo estás?» Usas <b>tú</b>, hay confianza y cercanía.</p>
+      <p class="note culture"><span class="note-ico" aria-hidden="true">🌎</span><span><b>Nota cultural:</b> En varios países de Latinoamérica, los saludos informales incluyen localismos muy característicos, como «¿Quiubo?» (Colombia), «¿Pura vida?» (Costa Rica) o «¿Qué fue?» (México).</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Resumen</h3>
+      <p>La clave está en la relación y el pronombre:</p>
+      <div class="sum-grid">
+        <div class="sum sum-f"><span class="badge">Formal</span><strong>«Buenos días, ¿cómo está usted?»</strong><small>Usas <b>usted</b>, hay distancia o respeto.</small></div>
+        <div class="sum sum-i"><span class="badge">Informal</span><strong>«¡Hola! ¿Qué tal, cómo estás?»</strong><small>Usas <b>tú</b>, hay confianza y cercanía.</small></div>
       </div>
     </div>
 
     <div class="card">
       <h3>Nos presentamos</h3>
-      <div class="chat" aria-label="Diálogo entre Ana y Luis">
-        <p class="b l"><b>Ana</b>¡Hola! Buenos días.</p>
-        <p class="b r"><b>Luis</b>Buenos días. ¿Cómo estás?</p>
-        <p class="b l"><b>Ana</b>Muy bien, gracias. ¿Y tú?</p>
-        <p class="b r"><b>Luis</b>Bien, gracias.</p>
-        <p class="b l"><b>Ana</b>Me llamo Ana. ¿Cómo te llamas?</p>
-        <p class="b r"><b>Luis</b>Me llamo Luis. Mucho gusto.</p>
-        <p class="b l"><b>Ana</b>El gusto es mío.</p>
-        <p class="b r"><b>Luis</b>Soy estudiante. ¿Y tú?</p>
-        <p class="b l"><b>Ana</b>Yo también soy estudiante. Encantada.</p>
-        <p class="b r"><b>Luis</b>Encantado.</p>
-        <p class="b l"><b>Ana</b>Bueno, me voy a clase. ¡Hasta luego!</p>
-        <p class="b r"><b>Luis</b>¡Adiós! Saludos.</p>
-        <p class="b l"><b>Ana</b>Saludos. ¡Hasta pronto!</p>
+      <div class="script" aria-label="Diálogo entre Ana y Luis">
+        <p class="starts">Empieza Ana. Luego responde Luis.</p>
+        <p><b class="who wa">Ana:</b> ¡Hola! Buenos días.</p>
+        <p><b class="who wl">Luis:</b> Buenos días. ¿Cómo estás?</p>
+        <p><b class="who wa">Ana:</b> Muy bien, gracias. ¿Y tú?</p>
+        <p><b class="who wl">Luis:</b> Bien, gracias.</p>
+        <p><b class="who wa">Ana:</b> Me llamo Ana. ¿Cómo te llamas?</p>
+        <p><b class="who wl">Luis:</b> Me llamo Luis. Mucho gusto.</p>
+        <p><b class="who wa">Ana:</b> El gusto es mío.</p>
+        <p><b class="who wl">Luis:</b> Soy estudiante. ¿Y tú?</p>
+        <p><b class="who wa">Ana:</b> Yo también soy estudiante. Encantada.</p>
+        <p><b class="who wl">Luis:</b> Encantado.</p>
+        <p><b class="who wa">Ana:</b> Bueno, me voy a clase. ¡Hasta luego!</p>
+        <p><b class="who wl">Luis:</b> ¡Adiós! Saludos.</p>
+        <p><b class="who wa">Ana:</b> Saludos. ¡Hasta pronto!</p>
       </div>
       <h4>Expresiones que aparecen</h4>
       <div class="scroll-x">
@@ -344,13 +202,13 @@
 
     <h3 class="act-h">Actividades</h3>
 
-    <div class="card act" id="act-ordena-card">
+    <div class="card act">
       <div class="act-head"><h4>1. Ordena las palabras</h4><p>Desliza las tarjetas, ordena las letras y escribe la expresión.</p></div>
       <div id="act-ordena"></div>
     </div>
 
     <div class="card act">
-      <div class="act-head"><h4>2. Sopa de letras</h4><p>Encuentra las diez expresiones. Toca la primera letra y arrastra hasta la última (o toca la primera y luego la última).</p></div>
+      <div class="act-head"><h4>2. Sopa de letras</h4><p>Encuentra las diez expresiones. Toca cada letra para marcarla, o arrastra desde la primera hasta la última.</p></div>
       <div id="act-sopa"></div>
     </div>
 
@@ -365,7 +223,7 @@
     </div>
   </article>
 
-  <!-- ---------- BAS-02 ---------- -->
+  <!-- ---------- BÁSICO 2 ---------- -->
   <article class="lesson" id="lesson-bas-02" role="tabpanel" aria-labelledby="tab-bas-02" hidden>
     <div class="card lead">
       <h3>El alfabeto y la pronunciación</h3>
@@ -376,6 +234,8 @@
       <div class="card">
         <h3>Objetivo general</h3>
         <p>Desarrollar la capacidad de identificar, pronunciar y deletrear correctamente las letras y sonidos del español.</p>
+      </div>
+      <div class="card">
         <h3>Objetivos específicos</h3>
         <ul class="goals">
           <li>Reconocer y pronunciar las 27 letras del alfabeto.</li>
@@ -383,30 +243,38 @@
           <li>Identificar los principales dígrafos y su sonido.</li>
         </ul>
       </div>
-      <div class="card">
-        <p>El alfabeto consta de 27 letras. Tiene dos tipos de letras: mayúsculas y minúsculas. El orden de las letras se conoce como orden alfabético.</p>
-        <p>Las letras mayúsculas se usan para escribir nombres de personas, países y ciudades. Se usan también al inicio de cada escritura y después de un punto.</p>
-        <h3>Dígrafos</h3>
-        <p>Un dígrafo es un conjunto de dos letras que juntas representan un solo sonido: <b>Ch</b>, <b>LL</b>, <b>RR</b>.</p>
-        <h3>Usos</h3>
-        <ul class="goals">
-          <li>Deletrear nombres propios y palabras desconocidas.</li>
-          <li>Comprender la relación entre letra y sonido.</li>
-          <li>Mejorar la claridad al hablar.</li>
-        </ul>
-      </div>
     </div>
 
     <div class="card">
+      <div class="hl-block">
+        <p>El alfabeto consta de <b>27 letras</b>. Tiene dos tipos de letras: <b>mayúsculas</b> y <b>minúsculas</b>. El orden de las letras se conoce como <b>orden alfabético</b>.</p>
+        <p>Las letras mayúsculas se usan para escribir nombres de personas, países y ciudades. Se usan también al inicio de cada escritura y después de un punto.</p>
+        <h4>Dígrafos</h4>
+        <p>Un dígrafo es un conjunto de dos letras que juntas representan un solo sonido: <b>Ch</b>, <b>LL</b>, <b>RR</b>.</p>
+      </div>
+      <h4>Usos</h4>
+      <ul class="goals">
+        <li>Deletrear nombres propios y palabras desconocidas.</li>
+        <li>Comprender la relación entre letra y sonido.</li>
+        <li>Mejorar la claridad al hablar.</li>
+      </ul>
+    </div>
+
+    <div class="card hl-key">
       <h3>Puntos clave</h3>
       <ul class="goals">
-        <li>El alfabeto español tiene 27 letras (incluyendo la ñ).</li>
-        <li>Los dígrafos ch, ll, rr, qu, gu representan un solo sonido.</li>
-        <li>La letra h es muda en español.</li>
-        <li>Las vocales tienen una pronunciación clara y corta (a, e, i, o, u).</li>
-        <li>La c y la g tienen sonidos diferentes según la vocal que las sigue (ce/ci, ge/gi).</li>
+        <li>El alfabeto español tiene <b>27 letras</b> (incluyendo la ñ).</li>
+        <li>Los dígrafos <b>ch, ll, rr, qu, gu</b> representan un solo sonido.</li>
+        <li>La letra <b>h</b> es muda en español.</li>
+        <li>Las vocales tienen una pronunciación clara y corta (<b>a, e, i, o, u</b>).</li>
+        <li>La <b>c</b> y la <b>g</b> tienen sonidos diferentes según la vocal que las sigue (<b>ce/ci, ge/gi</b>).</li>
       </ul>
-      <p class="note">El alfabeto completo, con el nombre de cada letra, está en el tablero de arriba. <button class="linkish" type="button" data-jump="panel-alpha">Ir al alfabeto</button></p>
+    </div>
+
+    <div class="card alpha-card" id="panel-alpha">
+      <h3 class="banner">El alfabeto español</h3>
+      <div class="alpha-grid" id="alpha-grid" role="group" aria-label="Letras del alfabeto"></div>
+      <p class="alpha-caption" id="alpha-caption" role="status" aria-live="polite">Toca una letra para ver y escuchar su nombre.</p>
       <h4>Expresiones de clase</h4>
       <div class="chips"><span class="chip">¿Cómo se escribe?</span><span class="chip">¿Cómo se pronuncia?</span><span class="chip">Se escribe con…</span></div>
     </div>
@@ -418,17 +286,32 @@
       <div id="act-board"></div>
     </div>
 
-    <div class="card act">
-      <div class="act-head"><h4>Actividades 2, 3 y 4</h4><p>Están en el tablero, arriba de la unidad.</p></div>
-      <div class="chips">
-        <button class="chip chip-btn" type="button" data-jump="panel-sound">2. El sonido de las letras</button>
-        <button class="chip chip-btn" type="button" data-jump="panel-practice">3. Practiquemos</button>
-        <button class="chip chip-btn" type="button" data-jump="panel-spell">4. Deletrea</button>
+    <div class="card act" id="panel-sound">
+      <div class="act-head"><h4>2. El sonido de las letras</h4><p>Mira el video y escucha cómo suena cada letra, de la A a la Z.</p></div>
+      <div class="player" id="video-player" data-video="iMxAw5OLF5g" data-start="62" data-end="">
+        <div class="player-frame"></div>
       </div>
+      <p class="player-note"><a id="video-link" href="https://www.youtube.com/watch?v=iMxAw5OLF5g&amp;t=62s" target="_blank" rel="noopener">Abrir el video en YouTube ↗</a></p>
+    </div>
+
+    <div class="card act flip" id="card-practice">
+      <button class="flip-head" type="button" aria-expanded="false" aria-controls="practice-body">
+        <svg class="flip-pic" viewBox="0 0 100 80" aria-hidden="true"><use href="#butterfly"/></svg>
+        <span><b>3. Practiquemos</b><small>Toca la tarjeta para empezar la actividad</small></span>
+      </button>
+      <div class="flip-body" id="practice-body" hidden><div id="practice-mount"></div></div>
+    </div>
+
+    <div class="card act flip" id="card-spell">
+      <button class="flip-head" type="button" aria-expanded="false" aria-controls="spell-body">
+        <span class="flip-pic flip-pen" aria-hidden="true">✏️</span>
+        <span><b>4. Deletrea</b><small>Toca la tarjeta para empezar la actividad</small></span>
+      </button>
+      <div class="flip-body" id="spell-body" hidden><div id="spell-mount"></div></div>
     </div>
   </article>
 
-  <!-- ---------- BAS-03 ---------- -->
+  <!-- ---------- BÁSICO 3 ---------- -->
   <article class="lesson" id="lesson-bas-03" role="tabpanel" aria-labelledby="tab-bas-03" hidden>
     <div class="card lead">
       <h3>Pronombres</h3>
@@ -448,7 +331,7 @@
         </tbody>
       </table>
       </div>
-      <p class="note"><b>Recuerda:</b> los pronombres <b>tú</b> y <b>él</b> llevan tilde. Sin tilde, «tu» es un adjetivo posesivo y «el» es un artículo.</p>
+      <p class="note rosalila"><b>Recuerda:</b> los pronombres <b>tú</b> y <b>él</b> llevan tilde. Sin tilde, «tu» es un adjetivo posesivo y «el» es un artículo.</p>
     </div>
 
     <h3 class="act-h">Actividades</h3>
@@ -462,12 +345,14 @@
       <div class="act-head"><h4>2. Pronombres en el texto</h4><p>Toca en el texto todos los pronombres personales de la tabla para subrayarlos. Luego clasifícalos escribiéndolos en el casillero correcto.</p></div>
       <div id="act-texto"></div>
     </div>
-
-    <div class="card act">
-      <div class="act-head"><h4>Ruleta</h4><p>Gira la ruleta de arriba, escribe la respuesta en el tablero y valida.</p></div>
-      <div class="chips"><button class="chip chip-btn" type="button" data-jump="panel-wheel">Ir a la ruleta</button></div>
-    </div>
   </article>
+</section>
+
+<!-- ============ RULETA (al final) ============ -->
+<section class="ruleta-end" id="panel-wheel" aria-labelledby="ruleta-title">
+  <h2 class="banner" id="ruleta-title">Ruleta</h2>
+  <p class="ruleta-help">Gira la ruleta, escribe la respuesta en el tablero y pulsa Validar.</p>
+  <div id="wheel-mount"></div>
 </section>
 
 </main>
@@ -484,14 +369,6 @@
   <h2 id="dq-title" class="dq-q"></h2>
   <div id="dq-board"></div>
   <p class="feedback" id="dq-feedback" role="status" aria-live="polite"></p>
-</dialog>
-
-<!-- Opciones -->
-<dialog id="dlg-options" class="dlg small" aria-labelledby="do-title">
-  <form method="dialog" class="dlg-x"><button class="x" aria-label="Cerrar">✕</button></form>
-  <h2 id="do-title" class="dq-q">Opciones</h2>
-  <label class="opt"><input type="checkbox" id="opt-sound" checked> Sonido y voz</label>
-  <label class="opt"><input type="checkbox" id="opt-big"> Letra grande</label>
 </dialog>
 
 <script src="app.js"></script>

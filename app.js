@@ -186,7 +186,8 @@ const KEYSETS = {
   aup: ['Acento mayúscula', 'ÁÉÍÓÚÜ'],
   alo: ['Acento minúscula', 'áéíóúü'],
 };
-const SIGNS = '¿?¡!.,';
+const SIGNS = '¿?¡!:;,."\'';
+const SIGN_NAME = { '¿': 'signo de pregunta (abre)', '?': 'signo de pregunta (cierra)', '¡': 'signo de admiración (abre)', '!': 'signo de admiración (cierra)', ':': 'dos puntos', ';': 'punto y coma', ',': 'coma', '.': 'punto', '"': 'comillas', "'": 'comilla simple' };
 const SWATCHES = [['Rosa intenso', '#ff2f8e'], ['Fucsia', '#d11fc2'], ['Lavanda claro', '#a58af0']];
 const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="#4a1650" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
 const ICON_REDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5v6h-6"/><path d="M20 11a8 8 0 1 0-2.3 6.3"/></svg>';
@@ -194,7 +195,7 @@ const ICON_ERASE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 
 function createBoard(root, opts = {}) {
   let color = SWATCHES[0][1], set = 'up';
-  let tokens = [], redoStack = [];
+  let tokens = [], redoStack = [], caret = 0; // caret: posición del cursor (0 = al inicio)
 
   const surface = h('div', { class: 'surface', tabindex: '0', role: 'group', 'aria-label': 'Tablero de escritura. Escribe con las letras de abajo o con tu teclado.' });
   const keys = h('div', { class: 'keys', role: 'group', 'aria-label': 'Letras' });
@@ -202,41 +203,53 @@ function createBoard(root, opts = {}) {
   const tabs = h('div', { class: 'kt', role: 'group', 'aria-label': 'Tipo de teclado' });
   const swatchBox = h('div', { class: 'wb-top', role: 'radiogroup', 'aria-label': 'Color de las letras' });
 
+  const caretEl = () => h('span', { class: 'caret', 'aria-hidden': 'true' });
   function render(newIdx = -1) {
     surface.replaceChildren();
     if (!tokens.length) surface.append(h('span', { class: 'ph' }, opts.placeholder || 'Toca las letras para escribir aquí…'));
+    let word = null; // cada palabra va junta: no se parte entre dos renglones
+    const putCaret = () => { (word || surface).append(caretEl()); };
+    if (caret === 0 && tokens.length) putCaret();
     tokens.forEach((t, i) => {
-      if (t.gap) surface.append(h('span', { class: 'mg gap' }));
-      else surface.append(h('span', { class: 'mg' + (i === newIdx ? ' new' : ''), style: `color:${t.color}` }, t.ch));
+      if (t.gap) {
+        surface.append(h('span', { class: 'mg gap', onclick: () => { caret = i + 1; render(); } })); word = null;
+        if (caret === i + 1 && i + 1 < tokens.length) surface.append(caretEl());
+        return;
+      }
+      if (!word) { word = h('span', { class: 'mgw' }); surface.append(word); }
+      word.append(h('span', { class: 'mg' + (i === newIdx ? ' new' : ''), style: `color:${t.color}`, title: 'Toca para poner el cursor aquí', onclick: () => { caret = i + 1; render(); surface.focus(); } }, t.ch));
+      if (caret === i + 1 && (i + 1 < tokens.length || true)) word.append(caretEl());
     });
     if (opts.onChange) opts.onChange(getText());
   }
   function getText() { return tokens.map(t => (t.gap ? ' ' : t.ch)).join('').replace(/\s+/g, ' ').trim(); }
   function add(ch) {
-    tokens.push({ ch, color });
+    tokens.splice(caret, 0, { ch, color }); caret++;
     redoStack = [];
-    render(tokens.length - 1);
+    render(caret - 1);
     if (opts.speakKeys) speak(letterName(ch) || ch);
   }
   function separate() {
-    if (!tokens.length || tokens[tokens.length - 1].gap) return;
-    tokens.push({ gap: true }); redoStack = []; render();
+    if (!caret || tokens[caret - 1].gap) return;
+    tokens.splice(caret, 0, { gap: true }); caret++; redoStack = []; render();
   }
-  function erase() {
-    if (!tokens.length) return;
-    redoStack.push([tokens.pop()]);
+  function erase() { // borra la letra que está antes del cursor
+    if (!caret) return;
+    redoStack.push({ at: caret - 1, t: tokens.splice(caret - 1, 1) }); caret--;
     render();
   }
   function clearAll() {
     if (!tokens.length) return;
-    redoStack.push(tokens.slice()); tokens = []; render();
+    redoStack.push({ at: 0, t: tokens.slice() }); tokens = []; caret = 0; render();
   }
   function redo() {
     const g = redoStack.pop();
-    if (g) { tokens.push(...g); render(); }
+    if (g) { tokens.splice(g.at, 0, ...g.t); caret = g.at + g.t.length; render(); }
   }
+  function move(d) { caret = Math.max(0, Math.min(tokens.length, caret + d)); render(); }
 
   function drawKeys() {
+    keys.className = 'keys' + (set === 'up' || set === 'lo' ? ' two' : '');
     keys.replaceChildren(...[...KEYSETS[set][1]].map(ch =>
       h('button', { class: 'mk', type: 'button', 'aria-label': letterName(ch) ? `${ch}, ${letterName(ch)}` : ch, onclick: () => add(ch) }, ch)));
     $$('button', tabs).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.set === set)));
@@ -244,7 +257,8 @@ function createBoard(root, opts = {}) {
   Object.entries(KEYSETS).forEach(([k, [label]]) => {
     tabs.append(h('button', { type: 'button', 'data-set': k, 'aria-pressed': String(k === set), onclick: () => { set = k; drawKeys(); } }, label));
   });
-  signs.replaceChildren(...[...SIGNS].map(ch => h('button', { class: 'mk', type: 'button', 'aria-label': ch, onclick: () => add(ch) }, ch)));
+  signs.replaceChildren(h('span', { class: 'signs-label' }, 'Signos'),
+    ...[...SIGNS].map(ch => h('button', { class: 'mk', type: 'button', 'aria-label': SIGN_NAME[ch], title: SIGN_NAME[ch], onclick: () => add(ch) }, ch)));
 
   SWATCHES.forEach(([name, c]) => {
     swatchBox.append(h('button', {
@@ -257,19 +271,24 @@ function createBoard(root, opts = {}) {
   surface.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === 'Backspace') { erase(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { move(-1); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { move(1); e.preventDefault(); }
+    else if (e.key === 'Delete') { if (caret < tokens.length) { caret++; erase(); } e.preventDefault(); }
     else if (e.key === ' ') { separate(); e.preventDefault(); }
-    else if (e.key.length === 1 && /[\p{L}\d¿?¡!.,]/u.test(e.key)) { add(e.key); e.preventDefault(); }
+    else if (e.key.length === 1 && /[\p{L}\d¿?¡!.,:;"']/u.test(e.key)) { add(e.key); e.preventDefault(); }
   });
 
   const actions = h('div', { class: 'row-actions' },
     h('button', { class: 'btn pink', type: 'button', onclick: erase, html: ICON_ERASE + '<span>Borrar</span>' }),
     h('button', { class: 'btn', type: 'button', onclick: redo, html: ICON_REDO + '<span>Rehacer</span>' }),
     h('button', { class: 'btn', type: 'button', onclick: separate }, 'Separar'),
+    h('button', { class: 'btn', type: 'button', 'aria-label': 'Mover el cursor a la izquierda', onclick: () => move(-1) }, '◀'),
+    h('button', { class: 'btn', type: 'button', 'aria-label': 'Mover el cursor a la derecha', onclick: () => move(1) }, '▶'),
     ...(opts.extra || []));
 
   root.replaceChildren(h('div', { class: 'wb' }, swatchBox, surface, keys, signs, tabs, actions));
   drawKeys(); render();
-  return { getText, clear: () => { tokens = []; redoStack = []; render(); }, focus: () => surface.focus() };
+  return { getText, clear: () => { tokens = []; redoStack = []; caret = 0; render(); }, focus: () => surface.focus() };
 }
 
 /* ============================================================
@@ -352,32 +371,31 @@ function initPractice() {
 const SPELL = ['Hola', 'Buenos días', 'Buenas tardes', 'Chao', 'Buenas noches', 'Hasta mañana', 'Hasta luego', 'Nos vemos', '¿Qué tal?'];
 function initSpell() {
   const m = $('#spell-mount');
-  let idx = -1, sep = false, hidden = false, hiddenFrom = -1;
+  let idx = -1, sep = false, hidden = false;
 
-  const top = h('div', { class: 'spell-chips' });
-  const bottom = h('div', { class: 'spell-chips' });
+  const chips = h('div', { class: 'spell-chips', role: 'group', 'aria-label': 'Palabras para deletrear' });
+  SPELL.forEach((w, i) => chips.append(h('button', { class: 'chip-w', type: 'button', 'data-i': i, 'aria-pressed': 'false', onclick: () => go(i) }, w)));
   const slate = h('div', { class: 'slate', role: 'button', tabindex: '0', 'aria-label': 'Pizarra. Toca para ver la siguiente palabra.' });
   const pencil = fromHTML('<svg class="pencil" viewBox="0 0 30 54" aria-hidden="true"><path d="M7 4h16l2 36-10 12L5 40z" fill="#ffd84a" stroke="#c98a00" stroke-width="2" stroke-linejoin="round"/><path d="M15 52l-8-12h16z" fill="#ffe3c2" stroke="#c98a00" stroke-width="2" stroke-linejoin="round"/><path d="M13 48l2 4 2-4z" fill="#4a1650"/><path d="M7 4h16v6H7z" fill="#ff8cc6" stroke="#c98a00" stroke-width="2"/></svg>');
-  const mini = h('div', { class: 'mini-row' },
-    h('button', { class: 'btn sm pink', type: 'button', onclick: () => { if (idx >= 0 && !hidden) { hidden = true; hiddenFrom = idx; draw(); } } }, 'Borrar'),
-    h('button', { class: 'btn sm', type: 'button', onclick: () => { if (idx < 0) go(0); else { hidden = false; draw(); } } }, 'Rehacer'),
-    h('button', { class: 'btn sm', type: 'button', 'aria-pressed': 'false', onclick: ev => { sep = !sep; ev.currentTarget.setAttribute('aria-pressed', String(sep)); draw(false); } }, 'Separar'));
-
-  SPELL.forEach((w, i) => {
-    (i < 4 ? top : bottom).append(h('button', { class: 'chip-w', type: 'button', 'data-i': i, 'aria-pressed': 'false', onclick: () => go(i) }, w));
-  });
+  const controls = h('div', { class: 'spell-controls', role: 'group', 'aria-label': 'Controles de la pizarra' },
+    h('button', { class: 'btn pink', type: 'button', html: ICON_ERASE + '<span>Borrar</span>', onclick: () => { if (idx >= 0 && !hidden) { hidden = true; draw(false); } } }),
+    h('button', { class: 'btn', type: 'button', html: ICON_REDO + '<span>Rehacer</span>', onclick: () => { if (idx < 0) go(0); else { hidden = false; draw(true); } } }),
+    h('button', { class: 'btn', type: 'button', 'aria-pressed': 'false', onclick: ev => { sep = !sep; ev.currentTarget.setAttribute('aria-pressed', String(sep)); draw(false); } }, 'Separar'));
 
   function draw(animate = true) {
     $$('.chip-w', m).forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === idx)));
     slate.classList.toggle('sep', sep);
     slate.replaceChildren();
     if (idx < 0 || hidden) {
-      slate.append(h('span', { class: 'ph' }, idx < 0 ? 'Toca una palabra o la pizarra' : 'Pizarra borrada. Toca «Rehacer».'));
+      slate.append(h('span', { class: 'ph' }, idx < 0 ? 'Elige una palabra o toca la pizarra' : 'Pizarra borrada. Pulsa «Rehacer».'));
     } else {
-      [...SPELL[idx]].forEach((ch, i) => {
-        if (ch === ' ') slate.append(h('span', { class: 'gap' }));
-        else slate.append(h('span', { class: 'lt', style: animate ? `animation-delay:${i * 90}ms` : 'animation:none' },
-          h('span', { class: 'c' }, ch), h('span', { class: 'n' }, letterName(ch))));
+      let n = 0;
+      SPELL[idx].split(' ').forEach(word => { // cada palabra va completa en un solo renglón
+        slate.append(h('span', { class: 'word' }, ...[...word].map(ch => {
+          const i = n++;
+          return h('span', { class: 'lt', style: animate ? `animation-delay:${i * 90}ms` : 'animation:none' },
+            h('span', { class: 'c' }, ch), h('span', { class: 'n' }, letterName(ch)));
+        })));
       });
     }
     slate.append(pencil);
@@ -390,7 +408,7 @@ function initSpell() {
   slate.addEventListener('click', () => go((idx + 1) % SPELL.length));
   slate.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go((idx + 1) % SPELL.length); } });
 
-  m.replaceChildren(top, slate, mini, bottom);
+  m.replaceChildren(h('p', { class: 'hint' }, 'Elige una palabra o toca la pizarra para ver la siguiente.'), chips, slate, controls);
   draw();
 }
 
@@ -471,38 +489,37 @@ function openQuestion(qi) {
   $('#dq-num').textContent = `Pregunta ${item.n}`;
   $('#dq-title').textContent = item.q;
   const fb = $('#dq-feedback');
-  fb.className = 'feedback'; fb.textContent = item.hint || '';
-  if (item.hint) fb.classList.add('hint');
-  let attempts = 0, finished = false;
+  fb.className = 'feedback' + (item.hint ? ' hint' : ''); fb.textContent = item.hint || '';
+  let finished = false;
 
   const validar = h('button', { class: 'btn', type: 'button', onclick: validate }, 'Validar');
-  const board = createBoard($('#dq-board'), { extra: [validar], speakKeys: true, placeholder: 'Escribe tu respuesta aquí…' });
+  const ver = item.free ? null : h('button', { class: 'btn pink', type: 'button', onclick: reveal }, 'Ver respuesta');
+  const board = createBoard($('#dq-board'), { extra: [validar, ver], speakKeys: true, placeholder: 'Escribe tu respuesta aquí…' });
 
   function conclude(right) {
-    finished = true; validar.disabled = true;
+    finished = true; validar.disabled = true; if (ver) ver.disabled = true;
     wheelState.results[item.n] = right; wheelState.asked++;
     setScore('ruleta', Object.values(wheelState.results).filter(Boolean).length);
     updateWheelScore();
   }
+  // Puedes corregir y validar las veces que quieras. «Ver respuesta» cierra la pregunta.
+  function reveal() {
+    if (finished) return;
+    fb.className = 'feedback no'; fb.textContent = `La respuesta es: ${item.show}.`; conclude(false);
+  }
   function validate() {
     if (finished) return;
     const text = board.getText();
-    if (!text) { fb.className = 'feedback hint'; fb.textContent = 'Escribe tu respuesta en el tablero.'; return; }
+    if (!text) { fb.className = 'feedback hint'; fb.textContent = 'Escribe tu respuesta en el tablero.'; board.focus(); return; }
     if (item.free) { fb.className = 'feedback ok'; fb.textContent = '¡Muy bien! Ahora deletrea tu nombre en voz alta.'; conclude(true); return; }
     const g = grade(text, item.a);
     if (g === 'ok') { fb.className = 'feedback ok'; fb.textContent = '¡Correcto!'; conclude(true); }
     else if (g === 'accent') { fb.className = 'feedback ok'; fb.textContent = `¡Correcto! Recuerda la tilde: ${item.show}.`; conclude(true); }
-    else {
-      attempts++;
-      if (attempts >= 2) { fb.className = 'feedback no'; fb.textContent = `La respuesta es: ${item.show}.`; conclude(false); }
-      else { fb.className = 'feedback no'; fb.textContent = 'Casi. Inténtalo otra vez.'; }
-    }
+    else { fb.className = 'feedback no'; fb.textContent = 'Casi. Corrige tu respuesta en el tablero y vuelve a validar.'; board.focus(); }
   }
   const onClose = () => {
     dlg.removeEventListener('close', onClose);
-    if (!finished) { // se cerró sin responder: vuelve al mazo
-      wheelState.deck.push(qi);
-    }
+    if (!finished) wheelState.deck.push(qi); // se cerró sin responder: vuelve al mazo
     updateWheelScore();
   };
   dlg.addEventListener('close', onClose);
@@ -645,7 +662,7 @@ function initSopa() {
   const root = $('#act-sopa');
   const ROWS = 12, COLS = 14;
   const G = buildSoup(ROWS, COLS);
-  let found = [], sel = [], anchor = null, drag = null, saved = null;
+  let found = [], sel = [], drag = null, saved = null;
 
   const soup = h('div', { class: 'soup', style: `grid-template-columns:repeat(${COLS},1fr)`, role: 'group', 'aria-label': 'Sopa de letras' });
   const cellEls = G.map((row, r) => row.map((ch, c) => {
@@ -655,6 +672,8 @@ function initSopa() {
   const wordsBox = h('div', { class: 'words', 'aria-label': 'Palabras por encontrar' },
     ...SOUP_WORDS.map(([label], i) => h('span', { class: 'wd', 'data-i': i }, label)));
   const fb = h('p', { class: 'feedback', role: 'status', 'aria-live': 'polite' });
+  const same = (a, b) => a[0] === b[0] && a[1] === b[1];
+  const cellOf = el => { const c = el && el.closest && el.closest('.sc'); return c ? [+c.dataset.r, +c.dataset.c] : null; };
 
   function line(a, b) {
     const dr = b[0] - a[0], dc = b[1] - a[1];
@@ -669,45 +688,42 @@ function initSopa() {
     $$('.wd', wordsBox).forEach(w => w.classList.toggle('done', found.some(f => f.wi === +w.dataset.i)));
     setScore('sopa', found.length);
   }
-  function finish(cells) {
-    const str = cells.map(([r, c]) => G[r][c]).join(''), rev = [...str].reverse().join('');
+  // Revisa las letras marcadas: si forman una de las expresiones, queda encontrada.
+  function checkSel(fromDrag) {
+    const str = sel.map(([r, c]) => G[r][c]).join(''), rev = [...str].reverse().join('');
     const wi = SOUP_WORDS.findIndex(([, w], i) => !found.some(f => f.wi === i) && (w === str || w === rev));
     if (wi >= 0) {
-      found.push({ wi, cells });
-      fb.className = 'feedback ok'; fb.textContent = found.length === SOUP_WORDS.length ? '¡Encontraste las diez expresiones!' : `¡Muy bien! «${SOUP_WORDS[wi][0]}».`;
+      found.push({ wi, cells: sel.slice() }); sel = [];
+      fb.className = 'feedback ok';
+      fb.textContent = found.length === SOUP_WORDS.length ? '¡Encontraste las diez expresiones!' : `¡Muy bien! «${SOUP_WORDS[wi][0]}».`;
+    } else if (fromDrag) {
+      sel = []; fb.className = 'feedback no'; fb.textContent = 'Esa no es una de las expresiones. Inténtalo otra vez.';
     } else {
-      fb.className = 'feedback no'; fb.textContent = 'Esa no es una de las expresiones. Inténtalo otra vez.';
+      fb.className = 'feedback hint'; fb.textContent = sel.length ? `Letras marcadas: ${str}` : '';
     }
+    paint();
   }
-  function tap(p) {
-    if (anchor) {
-      const same = anchor[0] === p[0] && anchor[1] === p[1];
-      const cells = same ? [] : line(anchor, p);
-      anchor = null; sel = [];
-      if (cells.length > 1) finish(cells);
-      paint(); return;
-    }
-    anchor = p; sel = [p]; paint();
+  function toggle(p) {
+    const i = sel.findIndex(q => same(q, p));
+    if (i >= 0) sel.splice(i, 1); else sel.push(p);
+    checkSel(false);
   }
-  const cellOf = el => { const c = el && el.closest && el.closest('.sc'); return c ? [+c.dataset.r, +c.dataset.c] : null; };
 
   soup.addEventListener('pointerdown', e => {
     const p = cellOf(e.target); if (!p) return;
     e.preventDefault();
-    if (anchor) { tap(p); return; }
-    drag = { start: p, moved: false }; sel = [p]; paint();
+    drag = { start: p, moved: false };
     try { soup.setPointerCapture(e.pointerId); } catch (err) { /* nada */ }
   });
   soup.addEventListener('pointermove', e => {
     if (!drag) return;
     const p = cellOf(document.elementFromPoint(e.clientX, e.clientY)); if (!p) return;
-    sel = line(drag.start, p); if (sel.length > 1) drag.moved = true; paint();
+    if (!same(p, drag.start) || drag.moved) { drag.moved = true; sel = line(drag.start, p); paint(); }
   });
   soup.addEventListener('pointerup', () => {
     if (!drag) return;
     const d = drag; drag = null;
-    if (!d.moved) { anchor = d.start; sel = [d.start]; paint(); return; }
-    const cells = sel; sel = []; finish(cells); paint();
+    if (d.moved) checkSel(true); else toggle(d.start);
   });
   soup.addEventListener('pointercancel', () => { drag = null; sel = []; paint(); });
   soup.addEventListener('keydown', e => { // flechas para moverse entre letras
@@ -719,12 +735,12 @@ function initSopa() {
   });
   soup.addEventListener('click', e => { // teclado (Enter o espacio)
     if (e.detail !== 0) return;
-    const p = cellOf(e.target); if (p) tap(p);
+    const p = cellOf(e.target); if (p) toggle(p);
   });
 
   const erase = h('button', { class: 'btn pink', type: 'button', html: ICON_ERASE + '<span>Borrar</span>', onclick: () => {
     if (found.length) saved = found.slice();
-    found = []; sel = []; anchor = null; fb.textContent = ''; paint();
+    found = []; sel = []; fb.textContent = ''; paint();
   } });
   const redo = h('button', { class: 'btn', type: 'button', html: ICON_REDO + '<span>Rehacer</span>', onclick: () => {
     if (saved) { found = saved; saved = null; paint(); }
@@ -940,22 +956,26 @@ function initTexto() {
     fb2.className = ok === 6 ? 'feedback ok' : 'feedback hint';
     fb2.textContent = ok === 6 ? '¡Tabla correcta!' : `Tienes ${ok} de 6 casilleros bien.${accentHint ? ' Recuerda: el pronombre «él» lleva tilde.' : ''}`;
   }
-  const erase = h('button', { class: 'btn pink', type: 'button', html: ICON_ERASE + '<span>Borrar</span>', onclick: () => {
+  const doErase = () => {
     if (under.size || Object.values(cells).some(Boolean)) saved = { u: new Set(under), c: { ...cells } };
-    under.clear(); Object.keys(cells).forEach(k => { cells[k] = ''; Object.keys(inputs).forEach(x => { inputs[x].className = ''; }); });
+    under.clear(); Object.keys(cells).forEach(k => { cells[k] = ''; });
+    Object.keys(inputs).forEach(x => { inputs[x].className = ''; });
     checked = false; fb1.textContent = ''; fb2.textContent = ''; setScore('tabla', 0); paint();
-  } });
-  const redo = h('button', { class: 'btn', type: 'button', html: ICON_REDO + '<span>Rehacer</span>', onclick: () => {
+  };
+  const doRedo = () => {
     if (saved) { saved.u.forEach(i => under.add(i)); Object.assign(cells, saved.c); saved = null; paint(); }
-  } });
+  };
+  const mkBtns = () => [
+    h('button', { class: 'btn pink', type: 'button', html: ICON_ERASE + '<span>Borrar</span>', onclick: doErase }),
+    h('button', { class: 'btn', type: 'button', html: ICON_REDO + '<span>Rehacer</span>', onclick: doRedo }),
+  ];
 
   root.replaceChildren(
     story,
-    h('div', { class: 'row-actions', style: 'margin-top:10px' }, h('button', { class: 'btn', type: 'button', onclick: checkUnder }, 'Revisar subrayado')), fb1,
+    h('div', { class: 'row-actions', style: 'margin-top:10px' }, ...mkBtns(), h('button', { class: 'btn', type: 'button', onclick: checkUnder }, 'Revisar subrayado')), fb1,
     h('h4', { style: 'margin-top:10px' }, 'Clasifica cada pronombre'),
     h('div', { class: 'cls-wrap' }, grid),
-    h('div', { class: 'row-actions', style: 'margin-top:10px' }, h('button', { class: 'btn', type: 'button', onclick: checkTable }, 'Revisar tabla')), fb2,
-    h('div', { class: 'row-actions' }, erase, redo));
+    h('div', { class: 'row-actions', style: 'margin-top:10px' }, ...mkBtns(), h('button', { class: 'btn', type: 'button', onclick: checkTable }, 'Revisar tabla')), fb2);
   paint();
 }
 
@@ -963,6 +983,116 @@ function initTexto() {
    BAS-02 · Actividad 1 · Practica el nombre de las letras
    ============================================================ */
 function initBoard() { createBoard($('#act-board'), { speakKeys: true }); }
+
+
+/* ============================================================
+   Saludos con imagen (BAS-01): al tocar un saludo aparece su escena
+   ============================================================ */
+function kid(x, y, o = {}) {
+  const { hair = '#f0662b', shirt = '#b8e286', wave = false, eyes = 'happy', pack = false, body = true } = o;
+  const eye = eyes === 'closed' ? '<path d="M-17 -2 q7 7 14 0 M3 -2 q7 7 14 0" fill="none" stroke="#4a1650" stroke-width="3.2" stroke-linecap="round"/>'
+    : eyes === 'happy' ? '<path d="M-17 2 q7 -9 14 0 M3 2 q7 -9 14 0" fill="none" stroke="#4a1650" stroke-width="3.2" stroke-linecap="round"/>'
+    : '<circle cx="-10" cy="-1" r="3.6" fill="#4a1650"/><circle cx="10" cy="-1" r="3.6" fill="#4a1650"/>';
+  return `<g transform="translate(${x} ${y})">
+    ${pack ? '<rect x="-34" y="38" width="22" height="40" rx="9" fill="#7f58d6" stroke="#4a1650" stroke-opacity=".4" stroke-width="2"/>' : ''}
+    ${body ? `<rect x="-27" y="34" width="54" height="58" rx="21" fill="${shirt}" stroke="#4a1650" stroke-opacity=".3" stroke-width="2"/>` : ''}
+    ${wave ? `<path d="M22 48 C48 40 52 14 46 -4" stroke="${shirt}" stroke-width="15" stroke-linecap="round" fill="none"/><circle cx="46" cy="-9" r="9.5" fill="#ffe0c7" stroke="#e9b995" stroke-width="2"/>` : ''}
+    <circle r="32" fill="#ffe0c7" stroke="#e9b995" stroke-width="2"/>
+    <path d="M-33 0 C-38 -40 -6 -46 3 -35 C16 -46 42 -36 33 0 C25 -17 12 -17 0 -22 C-14 -18 -27 -16 -33 0Z" fill="${hair}" stroke="#4a1650" stroke-opacity=".25" stroke-width="2" stroke-linejoin="round"/>
+    ${eye}
+    <path d="M-9 12 q9 10 18 0z" fill="#c23a55" stroke="#4a1650" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="-22" cy="10" r="5" fill="#ff9ab8" opacity=".6"/><circle cx="22" cy="10" r="5" fill="#ff9ab8" opacity=".6"/>
+  </g>`;
+}
+function bubble(x, y, w, text) {
+  return `<g><rect x="${x}" y="${y}" width="${w}" height="40" rx="20" fill="#fff" stroke="#e590c2" stroke-width="3"/>
+    <path d="M${x + w / 2 - 9} ${y + 38} l9 15 l9 -15z" fill="#fff" stroke="#e590c2" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="${x + w / 2 - 11}" y="${y + 34}" width="22" height="7" fill="#fff"/>
+    <text x="${x + w / 2}" y="${y + 27}" text-anchor="middle" font-family="Lilita One, Baloo 2, sans-serif" font-size="21" fill="#4a1650">${text}</text></g>`;
+}
+const GREET = {
+  hola: {
+    t: '¡Hola!', sub: 'El saludo más común. Sirve a cualquier hora del día.',
+    svg: `<rect width="420" height="230" fill="#ffe3f1"/><ellipse cx="70" cy="46" rx="40" ry="15" fill="#fff"/><ellipse cx="350" cy="36" rx="34" ry="13" fill="#fff"/>
+      <rect y="184" width="420" height="46" fill="#cdeaa8"/>
+      ${kid(125, 112, { wave: true })}${kid(300, 112, { hair: '#6b3fa0', shirt: '#ffa8d5', wave: true })}
+      ${bubble(70, 8, 110, '¡Hola!')}${bubble(250, 8, 110, '¡Hola!')}`,
+  },
+  dias: {
+    t: 'Buenos días', sub: 'Se usa por la mañana, hasta el mediodía.',
+    svg: `<rect width="420" height="230" fill="#fff1b8"/><rect width="420" height="120" fill="#ffe3a0"/>
+      <circle cx="300" cy="160" r="62" fill="#ffd84a" stroke="#f0a91f" stroke-width="4"/>
+      <g stroke="#f0a91f" stroke-width="5" stroke-linecap="round"><path d="M300 62v-18M236 84l-12-12M364 84l12-12M212 150h-18M388 150h18"/></g>
+      <path d="M0 190 C60 150 120 160 190 188 C250 170 340 168 420 192 V230 H0Z" fill="#9ed36b"/>
+      <path d="M0 208 C80 190 160 204 240 200 C320 196 380 206 420 204 V230 H0Z" fill="#7cc15a"/>
+      <path d="M60 50 q8 -9 16 0 q8 -9 16 0 M120 78 q6 -7 12 0 q6 -7 12 0" fill="none" stroke="#4a1650" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+      ${kid(130, 110, { wave: true, eyes: 'happy' })}${bubble(205, 14, 190, '¡Buenos días!')}`,
+  },
+  tardes: {
+    t: 'Buenas tardes', sub: 'Desde el mediodía hasta las 19:00 o 20:00 aproximadamente.',
+    svg: `<rect width="420" height="230" fill="#ffd2a8"/><rect width="420" height="90" fill="#ffb98a"/>
+      <circle cx="330" cy="132" r="40" fill="#ff8a4a" stroke="#d9561a" stroke-width="4"/>
+      <ellipse cx="90" cy="60" rx="46" ry="14" fill="#ffe3ec"/><ellipse cx="120" cy="52" rx="30" ry="12" fill="#ffe3ec"/><ellipse cx="270" cy="74" rx="36" ry="11" fill="#ffe3ec"/>
+      <path d="M0 176 C90 150 180 168 260 160 C330 152 380 166 420 160 V230 H0Z" fill="#d9a066"/>
+      <path d="M0 200 C100 184 200 204 300 196 C360 192 400 198 420 198 V230 H0Z" fill="#c48a52"/>
+      ${kid(150, 112, { pack: true, shirt: '#ffa8d5', hair: '#4a1650', eyes: 'open' })}${bubble(200, 12, 200, 'Buenas tardes')}`,
+  },
+  noches: {
+    t: 'Buenas noches', sub: 'Al atardecer y de noche. También sirve para despedirse.',
+    svg: `<rect width="420" height="230" fill="#2c2a63"/>
+      <circle cx="334" cy="64" r="34" fill="#fff6c8"/><circle cx="348" cy="56" r="30" fill="#2c2a63"/>
+      <g><use href="#sparkle" x="40" y="26" width="22" height="22"/><use href="#sparkle" x="120" y="60" width="16" height="16"/><use href="#sparkle" x="250" y="30" width="20" height="20"/><use href="#sparkle" x="190" y="96" width="14" height="14"/><use href="#sparkle" x="380" y="120" width="18" height="18"/></g>
+      <rect x="30" y="146" width="322" height="70" rx="18" fill="#e6dbff" stroke="#b79af5" stroke-width="3"/>
+      <rect x="40" y="118" width="110" height="52" rx="22" fill="#bcd8ff" stroke="#7aa6e0" stroke-width="3" transform="rotate(-4 95 144)"/>
+      <g transform="rotate(-8 100 140)">${kid(100, 134, { eyes: 'closed', body: false })}</g>
+      <path d="M118 154 H334 a18 18 0 0 1 18 18 V198 a18 18 0 0 1 -18 18 H118Z" fill="#37b79f" stroke="#1d8a76" stroke-width="3"/>
+      <g stroke="#9be3d3" stroke-width="2" opacity=".7"><path d="M170 156V212M230 156V212M290 156V212M118 184H350"/></g>
+      <text x="180" y="110" font-family="Lilita One, sans-serif" font-size="30" fill="#e6dbff">Z</text><text x="210" y="86" font-family="Lilita One, sans-serif" font-size="24" fill="#e6dbff">z</text><text x="232" y="68" font-family="Lilita One, sans-serif" font-size="18" fill="#e6dbff">z</text>
+      ${bubble(205, 14, 200, '¡Buenas noches!')}`,
+  },
+};
+function initGreetings() {
+  const stage = $('#greet-stage');
+  if (!stage) return;
+  const intro = `<svg viewBox="0 0 420 230" role="img" aria-label="Toca un saludo"><rect width="420" height="230" fill="#f3e7ff"/><use href="#butterfly" x="150" y="40" width="120" height="96"/><text x="210" y="190" text-anchor="middle" font-family="Lilita One, Baloo 2, sans-serif" font-size="24" fill="#7a3f7f">Toca un saludo</text></svg>`;
+  const draw = (key, animate) => {
+    const g = GREET[key];
+    stage.replaceChildren(
+      h('div', { class: 'gs-pic' + (animate ? ' swap' : ''), html: g ? `<svg viewBox="0 0 420 230" role="img" aria-label="Escena: ${g.t}">${g.svg}</svg>` : intro }),
+      h('p', { class: 'gs-text' }, g ? g.t : 'Saludos'),
+      h('p', { class: 'gs-sub' }, g ? g.sub : 'Toca un saludo para ver su imagen y escucharlo.'));
+  };
+  $$('.dt[data-g]').forEach(btn => {
+    btn.onclick = () => {
+      const key = btn.dataset.g;
+      $$('.dt[data-g]').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      draw(key, true);
+      speak(GREET[key].t.replace('¡', '').replace('!', ''));
+    };
+    btn.setAttribute('aria-pressed', 'false');
+  });
+  draw(null, false);
+}
+
+/* ============================================================
+   Video de los sonidos de las letras (recortado con inicio y fin)
+   Cambia data-start y data-end (en segundos) en index.html.
+   ============================================================ */
+function initVideo() {
+  const box = $('#video-player');
+  if (!box) return;
+  const id = box.dataset.video, start = parseInt(box.dataset.start, 10) || 0, end = parseInt(box.dataset.end, 10) || 0;
+  const q = new URLSearchParams({ start: String(start), rel: '0', modestbranding: '1' });
+  if (end > start) q.set('end', String(end));
+  $('.player-frame', box).replaceChildren(h('iframe', {
+    src: `https://www.youtube.com/embed/${id}?${q}`,
+    title: 'Video: el sonido de las letras, de la A a la Z',
+    loading: 'lazy', allowfullscreen: true,
+    allow: 'accelerometer; encrypted-media; picture-in-picture',
+    referrerpolicy: 'strict-origin-when-cross-origin',
+  }));
+  $('#video-link').href = `https://www.youtube.com/watch?v=${id}&t=${start}s`;
+}
 
 /* ============================================================
    Pestañas, botones del panel y opciones
@@ -984,30 +1114,15 @@ function goTab(id) {
   showTab(id);
 }
 function scrollToEl(el, block = 'start') { if (el) el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block }); }
-function timeGreeting() { const hr = new Date().getHours(); return hr < 12 ? 'Buenos días' : hr < 19 ? 'Buenas tardes' : 'Buenas noches'; }
 function setSound(on) {
   state.sound = on;
-  const b = $('[data-act="sound"]');
+  const b = $('#sound-toggle');
   b.setAttribute('aria-pressed', String(on));
-  b.setAttribute('aria-label', on ? 'Sonido activado' : 'Sonido desactivado');
-  $('#opt-sound').checked = on;
+  b.textContent = on ? 'Sonido: sí' : 'Sonido: no';
   if (!on) { try { speechSynthesis.cancel(); } catch (e) { /* nada */ } }
-}
-function say(msg) { $('#greeting').textContent = msg; }
-
-function summaryText() {
-  const name = $('#u-name').value.trim();
-  return `Aravarma class · Unidad 1${name ? ' · ' + name : ''}\n` + PG.map(([id, label, total]) => `${label}: ${score[id] || 0}/${total}`).join('\n');
 }
 
 function wirePanel() {
-  $('#login-form').addEventListener('submit', e => { e.preventDefault(); act('start'); });
-  document.addEventListener('click', e => {
-    const a = e.target.closest('[data-act]');
-    if (a && a.closest('#panel-pack')) act(a.dataset.act);
-    const j = e.target.closest('[data-jump]');
-    if (j) scrollToEl($('#' + j.dataset.jump), 'center');
-  });
   $$('.tab').forEach(t => {
     t.addEventListener('click', () => goTab(t.dataset.tab));
     t.addEventListener('keydown', e => {
@@ -1019,37 +1134,15 @@ function wirePanel() {
     });
   });
   window.addEventListener('hashchange', () => showTab(location.hash.slice(1)));
-  document.addEventListener('pointerdown', e => { const p = e.target.closest('.card.act, .panel'); if (p) state.last = p; });
-  $('#opt-sound').addEventListener('change', e => setSound(e.target.checked));
-  $('#opt-big').addEventListener('change', e => document.documentElement.classList.toggle('big', e.target.checked));
-}
-
-function act(name) {
-  switch (name) {
-    case 'exit': $('#u-name').value = ''; $('#u-country').value = ''; say('¡Hasta pronto!'); scrollTo({ top: 0 }); break;
-    case 'cancel': $('#u-name').value = ''; $('#u-country').value = ''; say(''); break;
-    case 'start': {
-      const n = $('#u-name').value.trim(), c = $('#u-country').value.trim();
-      say(`${timeGreeting()}${n ? ', ' + n : ''}. Mucho gusto.${c ? ' Eres de ' + c + '.' : ''}`);
-      goTab('bas-01'); scrollToEl($('#unidad')); break;
-    }
-    case 'resume': scrollToEl(state.last || $('#unidad')); break;
-    case 'restart': initAll(); say('Todo listo para empezar de nuevo.'); break;
-    case 'options': openDialog($('#dlg-options')); break;
-    case 'home': scrollTo({ top: 0 }); break;
-    case 'list': scrollToEl($('.tabs')); break;
-    case 'next': goTab(TABS[(TABS.indexOf(state.tab) + 1) % TABS.length]); scrollToEl($('.tabs')); break;
-    case 'prev': goTab(TABS[(TABS.indexOf(state.tab) + TABS.length - 1) % TABS.length]); scrollToEl($('.tabs')); break;
-    case 'spin': scrollToEl($('#panel-wheel'), 'center'); spin(); break;
-    case 'sound': setSound(!state.sound); break;
-    case 'copy': {
-      const txt = summaryText();
-      try {
-        navigator.clipboard.writeText(txt).then(() => say('Progreso copiado.')).catch(() => say('No se pudo copiar el progreso.'));
-      } catch (e) { say('No se pudo copiar el progreso.'); }
-      break;
-    }
-  }
+  $('#sound-toggle').addEventListener('click', () => setSound(!state.sound));
+  // Tarjetas de Practiquemos y Deletrea: al tocarlas aparece la actividad
+  $$('.flip-head').forEach(btn => btn.addEventListener('click', () => {
+    const body = document.getElementById(btn.getAttribute('aria-controls'));
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    body.hidden = !open;
+    btn.closest('.flip').classList.toggle('open', open);
+  }));
 }
 
 /* ============================================================
@@ -1060,6 +1153,7 @@ function initAll() {
   initAlphabet(); initPractice(); initSpell(); initWheel();
   initOrdena(); initSopa(); initSD(); initDialogos();
   initBoard(); initSustituye(); initTexto();
+  initGreetings(); initVideo();
   renderProgress();
 }
 
