@@ -481,8 +481,21 @@ input, select { font: inherit; color: inherit; }
 .mk:active { transform: translateY(2px); box-shadow: none; }
 .keys.signs .mk { background: linear-gradient(180deg, #f4ecff, #dccbfb); border-color: #9b7ff0; box-shadow: 0 3px 0 #9b7ff0; width: 34px; height: 34px; font-size: 1.1rem; }
 .kt { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.kt button { padding: 3px 14px; border-radius: 999px; border: 2px solid #1c1c1c; background: #fff; font-weight: 800; font-size: .82rem; line-height: 1.1; }
-.kt button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.kt button {
+  --edge-c: #7f4de0; --top: #d6c0ff; --bot: #a67cff;
+  display: inline-flex; align-items: center; min-height: 34px; padding: 5px 16px; border-radius: 999px; cursor: pointer;
+  border: 2px solid var(--edge-c); background: linear-gradient(180deg, var(--top), var(--bot)); color: var(--ink);
+  font-weight: 800; font-size: .92rem; line-height: 1.1; box-shadow: 0 3px 0 var(--edge-c);
+  transition: transform .12s, box-shadow .12s, filter .12s;
+}
+.kt button:hover { transform: translateY(-1px); filter: brightness(1.05); }
+/* cada botón con su color: lavanda encendido, rosa destello, fucsia claro, rosa chicle */
+.kt button:nth-child(5n+1) { --edge-c: #7f4de0; --top: #d6c0ff; --bot: #a67cff; }
+.kt button:nth-child(5n+2) { --edge-c: #d9269d; --top: #ffc4ee; --bot: #ff6fcf; }
+.kt button:nth-child(5n+3) { --edge-c: #b52aa8; --top: #fbb0f1; --bot: #ea6bdc; }
+.kt button:nth-child(5n+4) { --edge-c: #e0629f; --top: #ffd9ea; --bot: #ff9ec9; }
+.kt button:nth-child(5n+5) { --edge-c: #6a43c9; --top: #e4d6ff; --bot: #bda0ff; }
+.kt button[aria-pressed="true"] { color: #fff; text-shadow: 0 1px 0 rgba(0, 0, 0, .35); filter: saturate(1.25) brightness(.92); transform: translateY(2px); box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--edge-c); }
 
 /* diálogos de la página */
 .dlg { border: 4px solid #fff; border-radius: 26px; padding: 22px 22px 18px; background: linear-gradient(165deg, #fff0f8, #f0e6ff); color: var(--ink); width: min(560px, calc(100% - 24px)); max-height: calc(100% - 24px); box-shadow: inset 0 0 0 2px var(--edge), 0 20px 50px rgba(74, 22, 80, .4); }
