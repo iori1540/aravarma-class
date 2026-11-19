@@ -521,6 +521,21 @@ function initSubtabs() {
 /* ---------- Inicio de todo lo nuevo ---------- */
 /* ---------- Tarjetas que muestran la información al tocarlas (Básico 3) ---------- */
 const USE_ICON = ['🪪', '🌍', '💼', '⭐', '👥'];
+/** Tarjetas (solo título) + un cuadro de información que muestra lo de la tarjeta tocada. */
+function infoGroup(items, compact) {
+  const info = h('div', { class: 'infobox', role: 'region', 'aria-live': 'polite' }, h('p', { class: 'ib-hint' }, 'Toca una tarjeta para ver la información.'));
+  const cards = items.map(it => {
+    const c = h('button', { class: 'rcard', type: 'button', 'aria-pressed': 'false' },
+      it.icon ? h('span', { class: 'rc-ic', 'aria-hidden': 'true' }, it.icon) : null, h('span', { class: 'rc-front' }, it.front));
+    c.addEventListener('click', () => {
+      cards.forEach(x => x.setAttribute('aria-pressed', String(x === c)));
+      info.replaceChildren(h('h5', { class: 'ib-title' }, it.title), h('div', { class: 'ib-body' }, ...it.body.filter(Boolean)));
+      info.classList.add('on');
+    });
+    return c;
+  });
+  return h('div', { class: 'infogroup' }, h('div', { class: 'rcards' + (compact ? ' conjcards' : '') }, ...cards), info);
+}
 function revealCard(front, back, icon, sub) {
   const c = h('button', { class: 'rcard', type: 'button', 'aria-expanded': 'false' },
     icon ? h('span', { class: 'rc-ic', 'aria-hidden': 'true' }, icon) : null,
@@ -536,17 +551,15 @@ function revealCard(front, back, icon, sub) {
   return c;
 }
 function initRevealCards() {
-  // usos (Ser y Tener): cada uso es una tarjeta
+  // usos y conjugaciones: tarjetas arriba y un cuadro de información abajo
   $$('.subpanel[data-sub=ser] .uses, .subpanel[data-sub=tener] .uses').forEach(box => {
     const tener = !!box.closest('[data-sub=tener]');
-    const cards = $$('.use', box).map((u, i) => revealCard($('b', u).textContent, h('span', null, $('span', u).textContent), tener ? ['🎁', '🎂', '🥶', '📋', '🍀'][i] : USE_ICON[i]));
-    box.replaceChildren(...cards); box.classList.add('rcards');
+    const items = $$('.use', box).map((u, i) => ({ front: $('b', u).textContent, icon: tener ? ['🎁', '🎂', '🥶', '📋', '🍀'][i] : USE_ICON[i], title: $('b', u).textContent, body: [h('span', null, $('span', u).textContent)] }));
+    box.replaceWith(infoGroup(items));
   });
-  // conjugaciones: el pronombre al frente, la forma y el ejemplo al tocar
   $$('.subpanel[data-sub=ser] table.conj, .subpanel[data-sub=tener] table.conj').forEach(t => {
-    const rows = $$('tbody tr', t).map(tr => { const td = $$('td', tr).map(x => x.textContent); return revealCard(td[0], [h('b', { class: 'rc-form' }, td[1]), td[2] ? h('span', null, td[2]) : null], '', null); });
-    const grid = h('div', { class: 'rcards conjcards' }, ...rows);
-    (t.closest('.scroll-x') || t).replaceWith(grid);
+    const items = $$('tbody tr', t).map(tr => { const td = $$('td', tr).map(x => x.textContent); return { front: td[0], title: td[0], body: [h('b', { class: 'rc-form' }, td[1]), td[2] ? h('span', null, td[2]) : null] }; });
+    (t.closest('.scroll-x') || t).replaceWith(infoGroup(items, true));
   });
   // números: cardinales y ordinales
   const num = $('.subpanel[data-sub=num]'), anchor = num && $('.banner.big', num);

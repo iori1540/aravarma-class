@@ -931,3 +931,14 @@ input, select { font: inherit; color: inherit; }
 @media (max-width: 900px) { .rcards.small { grid-template-columns: repeat(6, 1fr); } }
 @media (max-width: 560px) { .rcards.small { grid-template-columns: repeat(3, 1fr); } }
 .small .rc-back .rc-form { font-size: .95rem; line-height: 1.1; }
+
+/* cuadro de información bajo las tarjetas */
+.infogroup { display: flex; flex-direction: column; gap: 12px; }
+.infogroup .rcard { min-height: 84px; }
+.infogroup .rcard[aria-pressed="true"] { background: #fff0f8; border-color: var(--fuchsia); box-shadow: 0 5px 0 #d86bad; }
+.infobox { background: #fff; border: 4px solid #d9b6f0; border-radius: 22px; padding: 14px 20px; min-height: 92px; display: flex; flex-direction: column; justify-content: center; gap: 4px; box-shadow: inset 0 2px 8px rgba(120, 80, 200, .1); }
+.infobox.on { border-color: var(--fuchsia); background: linear-gradient(165deg, #fff, #fff0f8); }
+.ib-hint { color: var(--ink-soft); font-weight: 700; text-align: center; }
+.ib-title { font-family: var(--font-display); font-weight: 400; font-size: 1.2rem; color: var(--fuchsia); margin: 0; }
+.ib-body { display: flex; flex-direction: column; gap: 2px; font-weight: 700; font-size: 1.05rem; }
+.ib-body .rc-form { font-size: 1.6rem; }
