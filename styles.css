@@ -942,3 +942,8 @@ input, select { font: inherit; color: inherit; }
 .ib-title { font-family: var(--font-display); font-weight: 400; font-size: 1.2rem; color: var(--fuchsia); margin: 0; }
 .ib-body { display: flex; flex-direction: column; gap: 2px; font-weight: 700; font-size: 1.05rem; }
 .ib-body .rc-form { font-size: 1.6rem; }
+
+/* lista de usos como en el archivo antiguo */
+.uso-list { margin: 6px 0 12px; padding-left: 24px; display: grid; gap: 6px; line-height: 1.35; }
+.uso-list li::marker { color: var(--pink-deep); }
+.cards-label { margin: 14px 0 6px; font-weight: 800; color: var(--ink-soft); }
