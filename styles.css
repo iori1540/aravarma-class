@@ -924,3 +924,6 @@ input, select { font: inherit; color: inherit; }
 .rc-form { font-family: var(--font-display); font-weight: 400; font-size: 1.3rem; color: var(--fuchsia); }
 .num-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .num-two .pill-title { display: inline-block; }
+.rcards.small { grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); }
+.small .rc-back .rc-form { font-size: 1.05rem; }
+.small .rcard { min-height: 92px; padding: 8px 6px; }

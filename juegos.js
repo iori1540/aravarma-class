@@ -551,12 +551,11 @@ function initRevealCards() {
   // números: cardinales y ordinales
   const num = $('.subpanel[data-sub=num]'), anchor = num && $('.banner.big', num);
   if (anchor) {
-    const CARD = [['1', 'uno'], ['2', 'dos'], ['3', 'tres'], ['10', 'diez'], ['20', 'veinte'], ['21', 'veintiuno'], ['30', 'treinta'], ['100', 'cien']];
-    const ORD = [['1.º', 'primero'], ['2.º', 'segundo'], ['3.º', 'tercero'], ['10.º', 'décimo'], ['20.º', 'vigésimo'], ['21.º', 'vigésimo primero'], ['30.º', 'trigésimo'], ['100.º', 'centésimo']];
+    const W = ['uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte',
+      'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta'];
     const box = h('div', { class: 'card' },
-      h('div', { class: 'num-two' },
-        h('div', null, h('h4', { class: 'pill-title' }, 'Cardinales · ¿Cuántos?'), h('div', { class: 'rcards small' }, ...CARD.map(([n, w]) => revealCard(n, h('b', { class: 'rc-form' }, w))))),
-        h('div', null, h('h4', { class: 'pill-title' }, 'Ordinales · ¿En qué orden?'), h('div', { class: 'rcards small' }, ...ORD.map(([n, w]) => revealCard(n, h('b', { class: 'rc-form' }, w)))))));
+      h('h4', { class: 'pill-title' }, 'Cardinales del 1 al 30 · ¿Cuántos?'),
+      h('div', { class: 'rcards small' }, ...W.map((w, i) => revealCard(String(i + 1), h('b', { class: 'rc-form' }, w)))));
     const tableCard = $('table.nums', num); (tableCard ? tableCard.closest('.card') : anchor).after(box);
   }
 }
