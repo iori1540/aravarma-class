@@ -554,7 +554,7 @@ function initRevealCards() {
     const W = ['uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte',
       'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta'];
     const box = h('div', { class: 'card' },
-      h('h4', { class: 'pill-title' }, 'Cardinales del 1 al 30 · ¿Cuántos?'),
+      h('h4', { class: 'pill-title' }, 'Cardinales del 1 al 30'),
       h('div', { class: 'rcards small' }, ...W.map((w, i) => revealCard(String(i + 1), h('b', { class: 'rc-form' }, w)))));
     const tableCard = $('table.nums', num); (tableCard ? tableCard.closest('.card') : anchor).after(box);
   }
