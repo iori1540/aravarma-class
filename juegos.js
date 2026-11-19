@@ -552,9 +552,10 @@ function initRevealCards() {
   const num = $('.subpanel[data-sub=num]'), anchor = num && $('.banner.big', num);
   if (anchor) {
     const W = ['uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte',
-      'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta'];
+      'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve', 'treinta',
+      'treinta y uno', 'treinta y dos', 'treinta y tres', 'treinta y cuatro', 'treinta y cinco', 'treinta y seis'];
     const box = h('div', { class: 'card' },
-      h('h4', { class: 'pill-title' }, 'Cardinales del 1 al 30'),
+      h('h4', { class: 'pill-title' }, 'Cardinales del 1 al 36'),
       h('div', { class: 'rcards small' }, ...W.map((w, i) => revealCard(String(i + 1), h('b', { class: 'rc-form' }, w)))));
     const tableCard = $('table.nums', num); (tableCard ? tableCard.closest('.card') : anchor).after(box);
   }
