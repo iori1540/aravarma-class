@@ -551,18 +551,18 @@ function revealCard(front, back, icon, sub) {
   return c;
 }
 function initRevealCards() {
-  // primero la información como en el archivo antiguo (lista y tabla); después, las tarjetas para repasar
-  const label = () => h('p', { class: 'cards-label' }, '👆 Repasa con las tarjetas: toca una para ver la información.');
-  $$('.subpanel[data-sub=ser] .uses, .subpanel[data-sub=tener] .uses').forEach(box => {
-    const tener = !!box.closest('[data-sub=tener]');
-    const us = $$('.use', box);
-    const items = us.map((u, i) => ({ front: $('b', u).textContent, icon: tener ? ['🎁', '🎂', '🥶', '📋', '🍀'][i] : USE_ICON[i], title: $('b', u).textContent, body: [h('span', null, $('span', u).textContent)] }));
-    const list = h('ul', { class: 'uso-list' }, ...us.map(u => h('li', null, h('b', null, $('b', u).textContent + ': '), $('span', u).textContent)));
-    box.replaceWith(list, label(), infoGroup(items));
-  });
-  $$('.subpanel[data-sub=ser] table.conj, .subpanel[data-sub=tener] table.conj').forEach(t => {
-    const items = $$('tbody tr', t).map(tr => { const td = $$('td', tr).map(x => x.textContent); return { front: td[0], title: td[0], body: [h('b', { class: 'rc-form' }, td[1]), td[2] ? h('span', null, td[2]) : null] }; });
-    (t.closest('.scroll-x') || t).after(label(), infoGroup(items, true));
+  // primero la información como en el archivo antiguo (lista y tabla juntas); al final de cada cuadro, un solo juego de tarjetas
+  $$('.subpanel[data-sub=ser] > .card, .subpanel[data-sub=tener] > .card').forEach(card => {
+    const items = [], tener = !!card.closest('[data-sub=tener]');
+    const uses = $('.uses', card), conj = $('table.conj', card);
+    if (!uses && !conj) return;
+    if (uses) {
+      const us = $$('.use', uses);
+      us.forEach((u, i) => items.push({ front: $('b', u).textContent, icon: tener ? ['🎁', '🎂', '🥶', '📋', '🍀'][i] : USE_ICON[i], title: $('b', u).textContent, body: [h('span', null, $('span', u).textContent)] }));
+      uses.replaceWith(h('ul', { class: 'uso-list' }, ...us.map(u => h('li', null, h('b', null, $('b', u).textContent + ': '), $('span', u).textContent))));
+    }
+    if (conj) $$('tbody tr', conj).forEach(tr => { const td = $$('td', tr).map(x => x.textContent); items.push({ front: td[0], title: td[0], body: [h('b', { class: 'rc-form' }, td[1]), td[2] ? h('span', null, td[2]) : null] }); });
+    card.append(h('p', { class: 'cards-label' }, '👆 Repasa con las tarjetas: toca una para ver la información.'), infoGroup(items));
   });
   // números: cardinales y ordinales
   const num = $('.subpanel[data-sub=num]'), anchor = num && $('.banner.big', num);
