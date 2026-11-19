@@ -887,3 +887,12 @@ input, select { font: inherit; color: inherit; }
 .wb.compact .keys .mk { border-radius: 11px; width: 38px; height: 40px; }
 .wb.compact .keys.signs .mk { width: 34px; height: 34px; }
 .wb.compact .signs-label { color: var(--ink-soft); }
+
+/* micrófono del deletreo */
+.btn.mic { border-color: #c21f9b; background: linear-gradient(180deg, #ffd9ee, #ff8fc7); box-shadow: 0 3px 0 #c21f9b; }
+.btn.mic.live { animation: micpulse 1s infinite; background: linear-gradient(180deg, #ff8fc7, #e0399c); color: var(--ink); }
+@keyframes micpulse { 50% { box-shadow: 0 0 0 6px rgba(224, 57, 156, .35), 0 3px 0 #c21f9b; } }
+.mic-msg { margin-top: 6px; }
+.lt.hit .c { color: var(--fuchsia); }
+.lt.hit { outline: 3px solid #f4a9d3; border-radius: 12px; background: #ffe3f2; }
+.lt.miss { outline: 3px dashed #b79af5; border-radius: 12px; background: #f1e8ff; }

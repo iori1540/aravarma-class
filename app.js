@@ -230,6 +230,7 @@ const SIGN_NAME = { '¿': 'signo de pregunta (abre)', '?': 'signo de pregunta (c
 const SWATCHES = [['Rosa intenso', '#ff2f8e'], ['Fucsia', '#d11fc2'], ['Lavanda claro', '#a58af0']];
 const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="#4a1650" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
 const ICON_REDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 5v6h-6"/><path d="M20 11a8 8 0 1 0-2.3 6.3"/></svg>';
+const ICON_MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
 const ICON_ERASE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>';
 
 function createBoard(root, opts = {}) {
@@ -428,6 +429,31 @@ function initPractice() {
    4. Deletrea
    ============================================================ */
 const SPELL = ['Hola', 'Buenos días', 'Buenas tardes', 'Chao', 'Buenas noches', 'Hasta mañana', 'Hasta luego', 'Nos vemos', '¿Qué tal?'];
+/* ---- micrófono: reconoce letras dichas en voz alta ---- */
+const SAY_LETTER = {
+  a: 'a', be: 'b', b: 'b', ve: 'bv', uve: 'v', v: 'v', ce: 'c', se: 'cs', c: 'c', de: 'd', d: 'd', e: 'e', efe: 'f', f: 'f', ge: 'g', je: 'gj', g: 'g',
+  hache: 'h', ache: 'h', h: 'h', i: 'i', jota: 'j', j: 'j', ka: 'k', k: 'k', ca: 'k', ele: 'l', l: 'l', eme: 'm', m: 'm', ene: 'n', n: 'n', 'eñe': 'ñ', ñ: 'ñ',
+  o: 'o', pe: 'p', p: 'p', cu: 'q', ku: 'q', q: 'q', erre: 'r', ere: 'r', r: 'r', ese: 's', s: 's', te: 't', t: 't', u: 'u', equis: 'x', x: 'x',
+  ye: 'y', y: 'y', griega: 'y', ze: 'z', zeta: 'z', seta: 'z', z: 'z', w: 'w', doble: 'w', i_griega: 'y',
+};
+function spokenToLetters(text) {
+  const parts = fold(text).replace(/[-_.,]/g, ' ').replace(/\buve doble\b/g, 'w').replace(/\bdoble ve\b/g, 'w').replace(/\bi griega\b/g, 'y').split(/\s+/).filter(Boolean);
+  return parts.map(p => SAY_LETTER[p] || '?');
+}
+function matchSpelling(texts, word) {
+  const target = [...fold(word).replace(/\s/g, '')];
+  let best = null;
+  for (const t of texts) {
+    const got = spokenToLetters(t);
+    const hits = target.map((c, i) => !!got[i] && got[i].includes(c));
+    const score = hits.filter(Boolean).length;
+    const full = got.length === target.length && hits.every(Boolean);
+    if (!best || full || score > best.score) best = { got, hits, score, full, text: t };
+    if (full) break;
+  }
+  return best;
+}
+
 function initSpell() {
   const m = $('#spell-mount');
   let idx = -1, sep = false, hidden = false;
@@ -436,10 +462,35 @@ function initSpell() {
   SPELL.forEach((w, i) => chips.append(h('button', { class: 'chip-w', type: 'button', 'data-i': i, 'aria-pressed': 'false', onclick: () => go(i) }, w)));
   const slate = h('div', { class: 'slate', role: 'button', tabindex: '0', 'aria-label': 'Pizarra. Toca para ver la siguiente palabra.' });
   const pencil = fromHTML('<svg class="pencil" viewBox="0 0 30 54" aria-hidden="true"><path d="M7 4h16l2 36-10 12L5 40z" fill="#ffd84a" stroke="#c98a00" stroke-width="2" stroke-linejoin="round"/><path d="M15 52l-8-12h16z" fill="#ffe3c2" stroke="#c98a00" stroke-width="2" stroke-linejoin="round"/><path d="M13 48l2 4 2-4z" fill="#4a1650"/><path d="M7 4h16v6H7z" fill="#ff8cc6" stroke="#c98a00" stroke-width="2"/></svg>');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micMsg = h('p', { class: 'feedback mic-msg', role: 'status', 'aria-live': 'polite' });
+  let rec = null, listening = false;
+  const micBtn = h('button', { class: 'btn mic', type: 'button', 'aria-pressed': 'false', html: ICON_MIC + '<span>Deletrear con el micrófono</span>', onclick: () => toggleMic() });
+  function stopMic() { try { if (rec) rec.abort(); } catch (e) { /* nada */ } listening = false; micBtn.setAttribute('aria-pressed', 'false'); micBtn.classList.remove('live'); }
+  function toggleMic() {
+    if (listening) { stopMic(); micMsg.className = 'feedback hint'; micMsg.textContent = ''; return; }
+    if (!SR) { micMsg.className = 'feedback no'; micMsg.textContent = 'Este navegador no escucha el micrófono. Prueba con Chrome o Edge.'; return; }
+    if (idx < 0) { micMsg.className = 'feedback hint'; micMsg.textContent = 'Primero elige una palabra.'; return; }
+    if (hidden) { hidden = false; draw(false); }
+    const word = SPELL[idx];
+    rec = new SR(); rec.lang = 'es-PE'; rec.interimResults = false; rec.maxAlternatives = 5; rec.continuous = false;
+    rec.onresult = ev => {
+      const texts = [...ev.results[0]].map(a => a.transcript);
+      const r = matchSpelling(texts, word);
+      $$('.lt', slate).forEach((el, i) => { el.classList.remove('hit', 'miss'); if (r.got[i]) el.classList.add(r.hits[i] ? 'hit' : 'miss'); });
+      if (r.full) { micMsg.className = 'feedback ok'; micMsg.textContent = `¡Muy bien! Deletreaste «${word}».`; }
+      else if (fold(texts[0]).replace(/\s/g, '') === fold(word).replace(/\s/g, '')) { micMsg.className = 'feedback hint'; micMsg.textContent = 'Dijiste la palabra completa. Ahora di cada letra: ' + [...word].filter(c => c !== ' ').map(letterName).join(', ') + '.'; }
+      else { micMsg.className = 'feedback no'; micMsg.textContent = `Escuché: ${texts[0]}. Inténtalo otra vez, letra por letra.`; }
+    };
+    rec.onerror = ev => { micMsg.className = 'feedback no'; micMsg.textContent = ev.error === 'not-allowed' || ev.error === 'service-not-allowed' ? 'Permite el micrófono en tu navegador para usar esta función.' : ev.error === 'no-speech' ? 'No te escuché. Inténtalo otra vez.' : 'No pude escuchar. Inténtalo otra vez.'; };
+    rec.onend = () => { listening = false; micBtn.setAttribute('aria-pressed', 'false'); micBtn.classList.remove('live'); };
+    try { rec.start(); listening = true; micBtn.setAttribute('aria-pressed', 'true'); micBtn.classList.add('live'); micMsg.className = 'feedback hint'; micMsg.textContent = `Escuchando… di las letras de «${word}» una por una.`; } catch (e) { stopMic(); }
+  }
   const controls = h('div', { class: 'spell-controls', role: 'group', 'aria-label': 'Controles de la pizarra' },
     h('button', { class: 'btn pink', type: 'button', html: ICON_ERASE + '<span>Borrar</span>', onclick: () => { if (idx >= 0 && !hidden) { hidden = true; draw(false); } } }),
     h('button', { class: 'btn', type: 'button', html: ICON_REDO + '<span>Rehacer</span>', onclick: () => { if (idx < 0) go(0); else { hidden = false; draw(true); } } }),
-    h('button', { class: 'btn', type: 'button', 'aria-pressed': 'false', onclick: ev => { sep = !sep; ev.currentTarget.setAttribute('aria-pressed', String(sep)); draw(false); } }, 'Separar'));
+    h('button', { class: 'btn', type: 'button', 'aria-pressed': 'false', onclick: ev => { sep = !sep; ev.currentTarget.setAttribute('aria-pressed', String(sep)); draw(false); } }, 'Separar'),
+    micBtn);
 
   function draw(animate = true) {
     $$('.chip-w', m).forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === idx)));
@@ -460,6 +511,7 @@ function initSpell() {
     slate.append(pencil);
   }
   function go(i) {
+    stopMic(); micMsg.textContent = '';
     idx = i; hidden = false; draw();
     const w = SPELL[i];
     playClip(`audio/deletreo/${slug(w)}.mp3`, `${w}. ${[...w].filter(c => c !== ' ').map(letterName).filter(Boolean).join(', ')}`);
@@ -467,7 +519,7 @@ function initSpell() {
   slate.addEventListener('click', () => go((idx + 1) % SPELL.length));
   slate.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go((idx + 1) % SPELL.length); } });
 
-  m.replaceChildren(h('p', { class: 'hint' }, 'Elige una palabra o toca la pizarra para ver la siguiente.'), chips, slate, controls);
+  m.replaceChildren(h('p', { class: 'hint' }, 'Elige una palabra o toca la pizarra para ver la siguiente.'), chips, slate, controls, micMsg);
   draw();
 }
 
