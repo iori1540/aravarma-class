@@ -557,7 +557,7 @@ function initRevealCards() {
       h('div', { class: 'num-two' },
         h('div', null, h('h4', { class: 'pill-title' }, 'Cardinales · ¿Cuántos?'), h('div', { class: 'rcards small' }, ...CARD.map(([n, w]) => revealCard(n, h('b', { class: 'rc-form' }, w))))),
         h('div', null, h('h4', { class: 'pill-title' }, 'Ordinales · ¿En qué orden?'), h('div', { class: 'rcards small' }, ...ORD.map(([n, w]) => revealCard(n, h('b', { class: 'rc-form' }, w)))))));
-    anchor.after(box);
+    const tableCard = $('table.nums', num); (tableCard ? tableCard.closest('.card') : anchor).after(box);
   }
 }
 
