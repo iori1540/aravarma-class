@@ -327,8 +327,8 @@ function createBoard(root, opts = {}) {
       h('button', { class: 'wb-mini', type: 'button', 'aria-label': 'Mover el cursor a la derecha', onclick: () => move(1) }, '▶')));
   const extra = (opts.extra || []).filter(Boolean);
 
-  root.replaceChildren(h('div', { class: 'wb' + (opts.compact ? ' compact' : '') },
-    opts.compact ? null : h('h3', { class: 'wb-title' }, 'Tablero de escritura'),
+  root.replaceChildren(h('div', { class: 'wb' + (opts.compact ? ' compact' : '') + (opts.classic ? ' classic' : '') },
+    opts.compact || opts.classic ? null : h('h3', { class: 'wb-title' }, 'Tablero de escritura'),
     h('div', { class: 'wb-main' }, surface, side),
     keys, signs, tabs,
     extra.length ? h('div', { class: 'row-actions' }, ...extra) : null));
@@ -1093,7 +1093,7 @@ function initTexto() {
 /* ============================================================
    BAS-02 · Actividad 1 · Practica el nombre de las letras
    ============================================================ */
-function initBoard() { createBoard($('#act-board'), { speakKeys: true }); }
+function initBoard() { createBoard($('#act-board'), { speakKeys: true, classic: true }); }
 
 
 /* ============================================================
