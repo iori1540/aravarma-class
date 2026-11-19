@@ -42,17 +42,24 @@ const state = { sound: true, tab: 'bas-01', last: null };
 let voice = null;
 function pickVoice() {
   try {
-    const vs = speechSynthesis.getVoices();
-    voice = vs.find(v => /^es[-_]PE/i.test(v.lang)) || vs.find(v => /^es/i.test(v.lang)) || null;
+    const vs = speechSynthesis.getVoices().filter(v => /^es/i.test(v.lang) || /spanish|español/i.test(v.name));
+    voice = vs.find(v => /^es[-_](PE|MX|US|419|CO|AR|CL)/i.test(v.lang) && /natural|online/i.test(v.name))
+      || vs.find(v => /^es[-_](PE|MX|US|419|CO|AR|CL)/i.test(v.lang)) || vs.find(v => /natural|online/i.test(v.name)) || vs[0] || null;
   } catch (e) { voice = null; }
 }
 try { speechSynthesis.onvoiceschanged = pickVoice; pickVoice(); } catch (e) { /* sin voz */ }
+/* Si el aparato no tiene voz en español, estas escrituras hacen que una voz en inglés suene casi como en español. */
+const FALLBACK_SAY = { a: 'ah', be: 'beh', ce: 'seh', de: 'deh', e: 'eh', efe: 'eh-feh', ge: 'heh', hache: 'ah-cheh', i: 'ee', jota: 'hoh-tah', ka: 'kah',
+  ele: 'eh-leh', eme: 'eh-meh', ene: 'eh-neh', 'eñe': 'eh-nyeh', o: 'oh', pe: 'peh', cu: 'koo', erre: 'eh-rreh', ese: 'eh-seh', te: 'teh', u: 'oo',
+  uve: 'oo-veh', 'uve doble': 'oo-veh doh-bleh', equis: 'eh-kees', 'i griega': 'ee gree-eh-gah', zeta: 'seh-tah' };
 function speak(text) {
   if (!state.sound || !text) return;
   try {
+    if (!voice) pickVoice();
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = voice ? voice.lang : 'es-PE';
+    const t = (!voice && FALLBACK_SAY[String(text).toLowerCase()]) || text;
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = voice ? voice.lang : 'es-ES';
     if (voice) u.voice = voice;
     u.rate = 0.85;
     speechSynthesis.speak(u);
@@ -333,15 +340,30 @@ function createBoard(root, opts = {}) {
    ============================================================ */
 function initAlphabet() {
   const grid = $('#alpha-grid'), cap = $('#alpha-caption');
-  grid.replaceChildren(...ALPHA.map(([u, l, n]) => h('button', {
+  let timer = null, running = false;
+  const reset = '<span>Toca una letra para ver y escuchar su nombre.</span>';
+  function pick(i) {
+    const [u, l, n] = ALPHA[i];
+    $$('.key', grid).forEach((k, j) => k.classList.toggle('on', j === i));
+    cap.replaceChildren(h('b', null, `${u}${l}`), ` · ${n}`, l === 'h' ? ' (¡es muda!)' : '');
+    playClip(`audio/letras/${letterFile(l)}.mp3`, n); // si grabas tu voz en audio/letras/, se usa; si no, habla el navegador
+  }
+  function stop() { clearTimeout(timer); running = false; startBtn.disabled = false; }
+  function run(i) {
+    if (!running) return;
+    if (i >= ALPHA.length) { stop(); return; }
+    pick(i); timer = setTimeout(() => run(i + 1), 1300);
+  }
+  const startBtn = h('button', { class: 'btn', type: 'button', html: ICON_REDO.replace('M20 5v6h-6', 'M4 5l14 7-14 7z').replace('<path d="M20 11a8 8 0 1 0-2.3 6.3"/>', '') + '<span>Iniciar</span>',
+    onclick: () => { stop(); running = true; startBtn.disabled = true; run(0); } });
+  const undoBtn = h('button', { class: 'btn pink', type: 'button', html: ICON_ERASE + '<span>Deshacer</span>',
+    onclick: () => { stop(); $$('.key', grid).forEach(k => k.classList.remove('on')); cap.textContent = 'Toca una letra para ver y escuchar su nombre.'; try { speechSynthesis.cancel(); } catch (e) { /* sin voz */ } } });
+  grid.replaceChildren(...ALPHA.map(([u, l, n], i) => h('button', {
     class: 'key', type: 'button', 'aria-label': `${u}, ${n}`,
-    onclick: ev => {
-      $$('.key', grid).forEach(k => k.classList.remove('on'));
-      ev.currentTarget.classList.add('on');
-      cap.replaceChildren(h('b', null, `${u}${l}`), ` · ${n}`, l === 'h' ? ' (¡es muda!)' : '');
-      playClip(`audio/letras/${letterFile(l)}.mp3`, n); // si grabas tu voz en audio/letras/, se usa; si no, habla el navegador
-    },
+    onclick: () => { stop(); pick(i); },
   }, h('span', { class: 'up' }, u), h('span', { class: 'lo' }, l), h('span', { class: 'nm' }, n))));
+  const bar = $('#alpha-actions');
+  if (bar) bar.replaceChildren(startBtn, undoBtn);
 }
 
 /* ============================================================
