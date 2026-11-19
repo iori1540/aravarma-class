@@ -733,7 +733,7 @@ input, select { font: inherit; color: inherit; }
   border: 3px solid #fff; background: linear-gradient(180deg, #ffd9ee, #ffa8d5); box-shadow: 0 0 0 2px #e590c2, 0 4px 0 #d86bad;
 }
 .stab:nth-child(even) { background: linear-gradient(180deg, #e9deff, #bda0ff); box-shadow: 0 0 0 2px #9b7ff0, 0 4px 0 #7f58d6; }
-.stab[aria-selected="true"] { color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.35); transform: translateY(3px); filter: saturate(1.3) brightness(.92); box-shadow: 0 0 0 2px var(--ink); }
+.stab[aria-selected="true"] { color: var(--ink); transform: translateY(3px); filter: saturate(1.3) brightness(.92); box-shadow: 0 0 0 2px var(--ink); }
 .subpanel { display: flex; flex-direction: column; gap: 16px; }
 .subpanel[hidden] { display: none; }
 .banner.big { font-size: 1.7rem; padding-block: 8px; }
@@ -799,7 +799,7 @@ input, select { font: inherit; color: inherit; }
 .pr-card .opts { display: flex; flex-direction: column; gap: 6px; width: 100%; }
 
 /* ---------- Panel de juego (estilo Educandy, colores del proyecto) ---------- */
-.gp { position: relative; border-radius: 28px; padding: 6px; background: linear-gradient(135deg, #ff7cc3, #b79af5 55%, #8c6df0); box-shadow: var(--shadow); outline: none; }
+.gp { position: relative; border-radius: 28px; padding: 6px; background: linear-gradient(135deg, #ffd0ea, #e6dbff); box-shadow: var(--shadow); outline: none; }
 .gp-bg { background: linear-gradient(165deg, #fff4fa, #efe1ff); border-radius: 22px; min-height: 340px; padding: 18px; display: flex; }
 .gp-start, .gp-count, .gp-end { margin: auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .gp-start[hidden], .gp-count[hidden], .gp-end[hidden], .gp-stage[hidden] { display: none; }
@@ -807,8 +807,8 @@ input, select { font: inherit; color: inherit; }
 .gp .mascot { width: 84px; height: 84px; }
 .gp-mascot.big .mascot { width: 130px; height: 130px; animation: bob 2s ease-in-out infinite; }
 @keyframes bob { 50% { transform: translateY(-8px); } }
-.gp-play { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: .08em; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.25); padding: 10px 46px; border-radius: 999px; border: 4px solid #fff; background: linear-gradient(180deg, #ff8ccd, #d9269d); box-shadow: 0 0 0 3px #d9269d, 0 6px 0 #8a1f66; cursor: pointer; }
-.gp-play:active { transform: translateY(4px); box-shadow: 0 0 0 3px #d9269d, 0 2px 0 #8a1f66; }
+.gp-play { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: .08em; color: var(--ink); padding: 10px 46px; border-radius: 999px; border: 3px solid #d86bad; background: linear-gradient(180deg, #ffd9ee, #ffa8d5); box-shadow: 0 5px 0 #d86bad; cursor: pointer; }
+.gp-play:active { transform: translateY(4px); box-shadow: 0 1px 0 #d86bad; }
 .gp-num { font-family: var(--font-display); font-size: 6rem; color: var(--pink-deep); animation: pop .5s both; display: block; }
 .gp-stage { display: flex; flex-direction: row-reverse; flex-wrap: wrap; gap: 16px; width: 100%; align-items: flex-start; justify-content: center; }
 .gp-main { flex: 1 1 320px; display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
@@ -838,7 +838,7 @@ input, select { font: inherit; color: inherit; }
 .gp-box { width: 44px; height: 50px; border-radius: 14px; border: 3px dashed #b79af5; background: #faf6ff; font-family: var(--font-display); font-size: 1.6rem; color: var(--ink); padding: 0; cursor: pointer; }
 .gp-box.on { border-style: solid; border-color: #d9269d; background: #ffe3f2; }
 .gp-tiles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.gp-tile { width: 52px; height: 56px; border-radius: 16px; border: 3px solid #fff; background: linear-gradient(180deg, #ff9fd8, #d9269d); box-shadow: 0 0 0 2px #8a1f66, 0 4px 0 #8a1f66; font-family: var(--font-display); font-size: 1.8rem; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.25); cursor: pointer; padding: 0; }
+.gp-tile { width: 52px; height: 56px; border-radius: 16px; border: 3px solid #d86bad; background: linear-gradient(180deg, #ffd9ee, #ffa8d5); box-shadow: 0 4px 0 #d86bad; font-family: var(--font-display); font-size: 1.8rem; color: var(--ink); cursor: pointer; padding: 0; }
 .gp-tile.used { opacity: .25; box-shadow: none; }
 .gp-tile.blink { animation: blink .5s ease-in-out 4; }
 @keyframes blink { 50% { filter: brightness(1.5); transform: scale(1.12); } }
@@ -850,8 +850,8 @@ input, select { font: inherit; color: inherit; }
 .act-bar { margin-top: 10px; }
 
 /* ---------- Tablero de escritura (nuevo diseño) ---------- */
-.wb { background: linear-gradient(135deg, #ff7cc3, #b79af5 55%, #8c6df0); border-radius: 30px; padding: 16px; gap: 12px; align-items: stretch; box-shadow: var(--shadow); }
-.wb-title { text-align: center; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.8rem, 5vw, 2.8rem); color: #fff; letter-spacing: .04em; -webkit-text-stroke: 2px #8a1f66; paint-order: stroke fill; text-shadow: 0 4px 0 #8a1f66, 0 8px 12px rgba(74,22,80,.3); }
+.wb { background: linear-gradient(135deg, #ffd0ea, #e6dbff); border-radius: 30px; padding: 16px; gap: 12px; align-items: stretch; box-shadow: var(--shadow); }
+.wb-title { text-align: center; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.8rem, 5vw, 2.8rem); color: var(--fuchsia); letter-spacing: .04em; -webkit-text-stroke: 2px #fff; paint-order: stroke fill; text-shadow: 0 4px 0 rgba(166,70,140,.35); }
 .wb-main { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
 .wb .surface { flex: 1 1 280px; min-height: 190px; background: #fff; border: 5px solid #ffd0ea; border-radius: 28px; box-shadow: inset 0 3px 10px rgba(180, 90, 160, .15); }
 .wb .mg { font-size: 2.8rem; -webkit-text-stroke: 2px rgba(255,255,255,.9); paint-order: stroke fill; text-shadow: 0 3px 0 rgba(74, 22, 80, .28); }
@@ -866,9 +866,24 @@ input, select { font: inherit; color: inherit; }
 .wb-mini { width: 44px; height: 34px; border-radius: 999px; border: 3px solid #fff; background: #fff; color: var(--fuchsia); font-weight: 800; cursor: pointer; }
 .wb .keys .mk { border-radius: 50%; width: 42px; height: 42px; }
 .wb .keys.signs .mk { width: 36px; height: 36px; }
-.wb .signs-label { font-weight: 800; color: #fff; align-self: center; }
+.wb .signs-label { font-weight: 800; color: var(--ink); align-self: center; }
 .wb.compact { padding: 10px; border-radius: 24px; }
 .wb.compact .surface { min-height: 120px; }
 .wb.compact .wb-side { flex-basis: 130px; }
 .dlg .wb.compact .wb-title { display: none; }
 @media (max-width: 560px) { .wb-side { flex-basis: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; } .wb-btn { flex: 1 1 40%; } }
+
+/* Ruleta y diálogo de preguntas: conservan el tablero del proyecto anterior */
+.wb.compact { background: none; box-shadow: none; padding: 0; border-radius: 0; gap: 10px; }
+.wb.compact .wb-main { flex-direction: column; flex-wrap: nowrap; gap: 8px; }
+.wb.compact .surface { flex: none; min-height: 112px; border: 4px solid #e2d3ff; border-radius: 18px; box-shadow: inset 0 0 0 2px #fff, inset 0 2px 8px rgba(120, 80, 200, .12); }
+.wb.compact .mg { font-size: 2.3rem; -webkit-text-stroke: 0; text-shadow: none; }
+.wb.compact .wb-side { flex: none; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.wb.compact .wb-side .wb-top { order: 5; background: none; padding: 0; margin-left: auto; }
+.wb.compact .wb-btn { min-height: 34px; padding: 4px 14px; font-family: var(--font-body); font-weight: 800; font-size: .9rem; border: 2px solid #7f58d6; background: linear-gradient(180deg, #fff, #e6dbff); box-shadow: 0 3px 0 #7f58d6; }
+.wb.compact .wb-btn:nth-of-type(1) { border-color: #d86bad; background: linear-gradient(180deg, #ffd9ee, #ffa8d5); box-shadow: 0 3px 0 #d86bad; }
+.wb.compact .wb-btn:nth-of-type(2), .wb.compact .wb-btn:nth-of-type(3) { border-color: #7f58d6; background: linear-gradient(180deg, #fff, #e6dbff); box-shadow: 0 3px 0 #7f58d6; }
+.wb.compact .wb-arrows { display: none; }
+.wb.compact .keys .mk { border-radius: 11px; width: 38px; height: 40px; }
+.wb.compact .keys.signs .mk { width: 34px; height: 34px; }
+.wb.compact .signs-label { color: var(--ink-soft); }
