@@ -586,6 +586,6 @@ function initJuegos() {
     id: 'escribe', mode: 'spell', items: ESCRIBE, title: 'Escribe la palabra', blurb: 'Mira la imagen y escribe la palabra.',
     info: 'Mira la imagen y escucha la palabra. Escríbela con las letras de la pantalla o con tu teclado. Usa ? si necesitas una pista.',
   });
-  createBoard($('#act-tablero'), { speakKeys: true, placeholder: 'Arrastra o escribe aquí los números cardinales…' });
+  createBoard($('#act-tablero'), { placeholder: 'Arrastra o escribe aquí los números cardinales…' });
   initSubtabs();
 }
