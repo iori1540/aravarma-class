@@ -1093,7 +1093,7 @@ function initTexto() {
 /* ============================================================
    BAS-02 · Actividad 1 · Practica el nombre de las letras
    ============================================================ */
-function initBoard() { createBoard($('#act-board'), { speakKeys: true, classic: true }); }
+function initBoard() { createBoard($('#act-board'), { classic: true }); }
 
 
 /* ============================================================
