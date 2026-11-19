@@ -1,0 +1,3 @@
+Audio de la profesora para Practiquemos, Escribe la palabra y Anagramas (.mp3).
+Nombre = palabra o frase en minúscula, sin tildes, espacios como guion: pato.mp3, balon.mp3, tu-tienes.mp3, nosotros-tenemos.mp3
+Si no existe, habla el navegador.

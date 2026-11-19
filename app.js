@@ -161,13 +161,15 @@ const RULETA = [
    ============================================================ */
 const PG = [
   ['ordena', 'Ordena', 10], ['sopa', 'Sopa', 10], ['sd', 'Saludos', 10], ['dial', 'Diálogos', 2],
-  ['sust', 'Sustituye', 7], ['texto', 'Texto', 6], ['tabla', 'Tabla', 6], ['prac', 'Practiquemos', 1], ['ruleta', 'Ruleta', RULETA.length],
+  ['sust', 'Sustituye', 7], ['texto', 'Texto', 6], ['tabla', 'Tabla', 6], ['prac', 'Practiquemos', 8], ['escribe', 'Escribe', 9],
+  ['serA', 'Ser A', 8], ['serB', 'Ser B', 17], ['serC', 'Ser C', 6], ['tenA', 'Tener A', 6], ['tenB', 'Tener B', 5], ['tenC', 'Anagramas', 4],
+  ['ruleta', 'Ruleta', RULETA.length],
 ];
 let score = {};
 /* Etiquetas de felicitación: salen cuando aciertas y al completar la actividad */
-const PRAISE = [['muybien', 'Muy bien'], ['felicitaciones', 'Felicitaciones'], ['buentrabajo', 'Buen trabajo'], ['lolograste', 'Lo lograste']];
-const PRAISE_END = [['excelente', 'Excelente'], ['terminada', 'Actividad terminada']];
-const ACT_BOX = { ordena: '#act-ordena', sopa: '#act-sopa', sd: '#act-sd', dial: '#act-dialogos', sust: '#act-sustituye', texto: '#act-texto', tabla: '#act-texto', prac: '#practice-mount', ruleta: '#wheel-mount' };
+const PRAISE = [['muybien', 'Muy bien'], ['buentrabajo', 'Buen trabajo'], ['felicitaciones', 'Felicitaciones']];
+const PRAISE_END = [['excelente', 'Excelente']];
+const ACT_BOX = { ordena: '#act-ordena', sopa: '#act-sopa', sd: '#act-sd', dial: '#act-dialogos', sust: '#act-sustituye', texto: '#act-texto', tabla: '#act-texto', prac: '#practice-mount', escribe: '#spellit-mount', serA: '#act-ser-a', serB: '#act-ser-b', serC: '#act-ser-c', tenA: '#act-ten-a', tenB: '#act-ten-b', tenC: '#act-ten-c', ruleta: '#wheel-mount' };
 let praiseTimer = null, praiseN = 0, endN = 0;
 function showPraise([img, text], big) {
   let el = $('#praise');
@@ -308,15 +310,20 @@ function createBoard(root, opts = {}) {
     else if (e.key.length === 1 && /[\p{L}\d¿?¡!.,:;"']/u.test(e.key)) { add(e.key); e.preventDefault(); }
   });
 
-  const actions = h('div', { class: 'row-actions' },
-    h('button', { class: 'btn pink', type: 'button', onclick: erase, html: ICON_ERASE + '<span>Borrar</span>' }),
-    h('button', { class: 'btn', type: 'button', onclick: redo, html: ICON_REDO + '<span>Rehacer</span>' }),
-    h('button', { class: 'btn', type: 'button', onclick: separate }, 'Separar'),
-    h('button', { class: 'btn', type: 'button', 'aria-label': 'Mover el cursor a la izquierda', onclick: () => move(-1) }, '◀'),
-    h('button', { class: 'btn', type: 'button', 'aria-label': 'Mover el cursor a la derecha', onclick: () => move(1) }, '▶'),
-    ...(opts.extra || []));
+  const side = h('div', { class: 'wb-side' }, swatchBox,
+    h('button', { class: 'wb-btn', type: 'button', onclick: erase, html: '<span>Borrar</span>' + ICON_ERASE }),
+    h('button', { class: 'wb-btn', type: 'button', onclick: separate, html: '<span>Separa</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h6l6-6M10 12l6 6M16 6h4M16 18h4"/></svg>' }),
+    h('button', { class: 'wb-btn', type: 'button', onclick: redo, html: '<span>Rehacer</span>' + ICON_REDO }),
+    h('div', { class: 'wb-arrows' },
+      h('button', { class: 'wb-mini', type: 'button', 'aria-label': 'Mover el cursor a la izquierda', onclick: () => move(-1) }, '◀'),
+      h('button', { class: 'wb-mini', type: 'button', 'aria-label': 'Mover el cursor a la derecha', onclick: () => move(1) }, '▶')));
+  const extra = (opts.extra || []).filter(Boolean);
 
-  root.replaceChildren(h('div', { class: 'wb' }, swatchBox, surface, keys, signs, tabs, actions));
+  root.replaceChildren(h('div', { class: 'wb' + (opts.compact ? ' compact' : '') },
+    opts.compact ? null : h('h3', { class: 'wb-title' }, 'Tablero de escritura'),
+    h('div', { class: 'wb-main' }, surface, side),
+    keys, signs, tabs,
+    extra.length ? h('div', { class: 'row-actions' }, ...extra) : null));
   drawKeys(); render();
   return { getText, clear: () => { tokens = []; redoStack = []; caret = 0; render(); }, focus: () => surface.focus() };
 }
@@ -332,7 +339,7 @@ function initAlphabet() {
       $$('.key', grid).forEach(k => k.classList.remove('on'));
       ev.currentTarget.classList.add('on');
       cap.replaceChildren(h('b', null, `${u}${l}`), ` · ${n}`, l === 'h' ? ' (¡es muda!)' : '');
-      speak(n);
+      playClip(`audio/letras/${letterFile(l)}.mp3`, n); // si grabas tu voz en audio/letras/, se usa; si no, habla el navegador
     },
   }, h('span', { class: 'up' }, u), h('span', { class: 'lo' }, l), h('span', { class: 'nm' }, n))));
 }
@@ -433,7 +440,7 @@ function initSpell() {
   function go(i) {
     idx = i; hidden = false; draw();
     const w = SPELL[i];
-    speak(`${w}. ${[...w].filter(c => c !== ' ').map(letterName).filter(Boolean).join(', ')}`);
+    playClip(`audio/deletreo/${slug(w)}.mp3`, `${w}. ${[...w].filter(c => c !== ' ').map(letterName).filter(Boolean).join(', ')}`);
   }
   slate.addEventListener('click', () => go((idx + 1) % SPELL.length));
   slate.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go((idx + 1) % SPELL.length); } });
@@ -524,7 +531,7 @@ function openQuestion(qi) {
 
   const validar = h('button', { class: 'btn', type: 'button', onclick: validate }, 'Validar');
   const ver = item.free ? null : h('button', { class: 'btn pink', type: 'button', onclick: reveal }, 'Ver respuesta');
-  const board = createBoard($('#dq-board'), { extra: [validar, ver], speakKeys: true, placeholder: 'Escribe tu respuesta aquí…' });
+  const board = createBoard($('#dq-board'), { extra: [validar, ver], speakKeys: true, compact: true, placeholder: 'Escribe tu respuesta aquí…' });
 
   function conclude(right) {
     finished = true; validar.disabled = true; if (ver) ver.disabled = true;
@@ -1160,10 +1167,11 @@ function wirePanel() {
    ============================================================ */
 function initAll() {
   score = {};
-  initAlphabet(); initPractice(); initSpell(); initWheel();
+  initAlphabet(); initSpell(); initWheel();
   initOrdena(); initSopa(); initSD(); initDialogos();
   initBoard(); initSustituye(); initTexto();
   initGreetings();
+  if (typeof initJuegos === 'function') initJuegos();
   renderProgress();
 }
 

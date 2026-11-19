@@ -72,7 +72,7 @@
   <div class="tabs" role="tablist" aria-label="Clases de la unidad">
     <button class="tab" role="tab" id="tab-bas-01" data-tab="bas-01" aria-controls="lesson-bas-01" type="button"><b>Básico 1</b> Saludos y presentaciones</button>
     <button class="tab" role="tab" id="tab-bas-02" data-tab="bas-02" aria-controls="lesson-bas-02" type="button"><b>Básico 2</b> El alfabeto y la pronunciación</button>
-    <button class="tab" role="tab" id="tab-bas-03" data-tab="bas-03" aria-controls="lesson-bas-03" type="button"><b>Básico 3</b> Pronombres</button>
+    <button class="tab" role="tab" id="tab-bas-03" data-tab="bas-03" aria-controls="lesson-bas-03" type="button"><b>Básico 3</b> Pronombres, verbos ser y tener, números</button>
   </div>
 
   <!-- ---------- BÁSICO 1 ---------- -->
@@ -311,41 +311,204 @@
       </button>
       <div class="flip-body" id="spell-body" hidden><div id="spell-mount"></div></div>
     </div>
+
+    <div class="card act">
+      <div class="act-head"><h4>5. Escribe la palabra</h4><p>Mira la imagen, escucha la palabra y escríbela con las letras de abajo. Pulsa PLAY para empezar.</p></div>
+      <div id="spellit-mount"></div>
+    </div>
   </article>
 
   <!-- ---------- BÁSICO 3 ---------- -->
   <article class="lesson" id="lesson-bas-03" role="tabpanel" aria-labelledby="tab-bas-03" hidden>
     <div class="card lead">
-      <h3>Pronombres</h3>
-      <p><b>Pronombres personales:</b> son palabras que reemplazan el nombre de la persona que hace la acción. Por ejemplo:</p>
-      <p class="example">Leo ha leído «Robin Hood» → <b>Él</b> ha leído «Robin Hood» <span class="muted">(Él reemplaza a Leo)</span></p>
+      <h3>BAS-03 · Pronombres, verbo ser, verbo tener y números cardinales</h3>
+      <p>Aprende a decir quién eres, qué tienes y cuántos hay. Elige una parte y practica con las actividades.</p>
     </div>
 
-    <div class="card">
-      <h3>Pronombres personales</h3>
-      <div class="scroll-x">
-      <table class="t pro">
-        <thead><tr><th>Persona</th><th>Singular</th><th>Plural</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">1ª persona</th><td>yo</td><td>nosotros<br>nosotras</td></tr>
-          <tr><th scope="row">2ª persona</th><td>tú<br>usted</td><td>vosotros<br>vosotras<br>ustedes</td></tr>
-          <tr><th scope="row">3ª persona</th><td>él<br>ella</td><td>ellos<br>ellas</td></tr>
-        </tbody>
-      </table>
+    <div class="subtabs" role="tablist" aria-label="Partes de Básico 3">
+      <button class="stab" role="tab" type="button" data-sub="pron" aria-selected="true">Pronombres</button>
+      <button class="stab" role="tab" type="button" data-sub="ser" aria-selected="false">1. Verbo SER</button>
+      <button class="stab" role="tab" type="button" data-sub="tener" aria-selected="false">2. Verbo TENER</button>
+      <button class="stab" role="tab" type="button" data-sub="num" aria-selected="false">3. Números cardinales</button>
+    </div>
+
+    <!-- Pronombres -->
+    <div class="subpanel" data-sub="pron">
+      <div class="card">
+        <h3>Pronombres</h3>
+        <p><b>Pronombres personales:</b> son palabras que reemplazan el nombre de la persona que hace la acción. Por ejemplo:</p>
+        <p class="example">Leo ha leído «Robin Hood» → <b>Él</b> ha leído «Robin Hood» <span class="muted">(Él reemplaza a Leo)</span></p>
+        <div class="scroll-x">
+        <table class="t pro">
+          <thead><tr><th>Persona</th><th>Singular</th><th>Plural</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1ª persona</th><td>yo</td><td>nosotros<br>nosotras</td></tr>
+            <tr><th scope="row">2ª persona</th><td>tú<br>usted</td><td>vosotros<br>vosotras<br>ustedes</td></tr>
+            <tr><th scope="row">3ª persona</th><td>él<br>ella</td><td>ellos<br>ellas</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="note rosalila"><b>Recuerda:</b> los pronombres <b>tú</b> y <b>él</b> llevan tilde. Sin tilde, «tu» es un adjetivo posesivo y «el» es un artículo.</p>
       </div>
-      <p class="note rosalila"><b>Recuerda:</b> los pronombres <b>tú</b> y <b>él</b> llevan tilde. Sin tilde, «tu» es un adjetivo posesivo y «el» es un artículo.</p>
+      <h3 class="act-h">Actividades</h3>
+      <div class="card act">
+        <div class="act-head"><h4>1. Sustituye con el pronombre correcto</h4><p>Elige el pronombre que reemplaza a cada nombre.</p></div>
+        <div id="act-sustituye"></div>
+      </div>
+      <div class="card act">
+        <div class="act-head"><h4>2. Pronombres en el texto</h4><p>Toca en el texto todos los pronombres personales de la tabla para subrayarlos. Luego clasifícalos escribiéndolos en el casillero correcto.</p></div>
+        <div id="act-texto"></div>
+      </div>
     </div>
 
-    <h3 class="act-h">Actividades</h3>
-
-    <div class="card act">
-      <div class="act-head"><h4>1. Sustituye con el pronombre correcto</h4><p>Elige el pronombre que reemplaza a cada nombre.</p></div>
-      <div id="act-sustituye"></div>
+    <!-- Verbo SER -->
+    <div class="subpanel" data-sub="ser" hidden>
+      <h3 class="banner big">Verbo SER</h3>
+      <div class="card">
+        <h4 class="pill-title">Principales usos del verbo SER</h4>
+        <div class="uses">
+          <div class="use"><b>Decir el nombre</b><span>Yo soy Amelia (presentarse).</span></div>
+          <div class="use"><b>Decir de dónde eres</b><span>Ella es peruana. / Yo soy brasilera.</span></div>
+          <div class="use"><b>Decir la profesión</b><span>Él es ingeniero. / Roberto y tú son arquitectos.</span></div>
+          <div class="use"><b>Describir física o psicológicamente a una persona</b><span>Él es inteligente. / Él es guapo.</span></div>
+          <div class="use"><b>Identificar personas</b><span>Él es mi tío. / Ella es mi profesora.</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="pill-title">Conjugación del verbo SER</h4>
+        <div class="scroll-x">
+        <table class="t conj">
+          <thead><tr><th>Pronombre</th><th>Ser</th><th>Ejemplo</th></tr></thead>
+          <tbody>
+            <tr><td>Yo</td><td><b>soy</b></td><td>Yo soy estudiante.</td></tr>
+            <tr><td>Tú</td><td><b>eres</b></td><td>Tú eres policía.</td></tr>
+            <tr><td>Él / Ella / Usted</td><td><b>es</b></td><td>Él es bondadoso.</td></tr>
+            <tr><td>Nosotros / Nosotras</td><td><b>somos</b></td><td>Nosotros somos de Perú. / Nosotras somos amigas.</td></tr>
+            <tr><td>Vosotros / Vosotras</td><td><b>sois</b></td><td>Vosotros sois profesores. / Vosotras sois muy amables.</td></tr>
+            <tr><td>Ellos / Ellas / Ustedes</td><td><b>son</b></td><td>Ellos son médicos. / Ellas son peruanas. / Ustedes son arquitectos.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <h3 class="act-h">Actividades · Verbo SER</h3>
+      <div class="card act">
+        <div class="act-head"><h4>A. Identifica el uso correcto del verbo SER</h4><p>Elige la opción correcta o escribe la respuesta.</p></div>
+        <div id="act-ser-a"></div>
+      </div>
+      <div class="card act">
+        <div class="act-head"><h4>B. Completa con la forma correcta del verbo SER</h4><p>Elige soy, eres, es, somos o son en cada espacio. «Mi grupo de amigos».</p></div>
+        <div id="act-ser-b"></div>
+      </div>
+      <div class="card act">
+        <div class="act-head"><h4>C. Arrastra y suelta · Verbo SER</h4><p>Arrastra cada forma del verbo hasta su pronombre. También puedes tocar la forma y luego el pronombre.</p></div>
+        <div id="act-ser-c"></div>
+      </div>
     </div>
 
-    <div class="card act">
-      <div class="act-head"><h4>2. Pronombres en el texto</h4><p>Toca en el texto todos los pronombres personales de la tabla para subrayarlos. Luego clasifícalos escribiéndolos en el casillero correcto.</p></div>
-      <div id="act-texto"></div>
+    <!-- Verbo TENER -->
+    <div class="subpanel" data-sub="tener" hidden>
+      <h3 class="banner big">Verbo TENER</h3>
+      <div class="card">
+        <p><b>Significado:</b> su significado principal es poseer algo, pero también se usa para expresar estados físicos o emocionales, edad y obligación.</p>
+        <h4 class="pill-title">Conjugación del verbo TENER</h4>
+        <div class="scroll-x">
+        <table class="t conj">
+          <thead><tr><th>Pronombre</th><th>Conjugación</th></tr></thead>
+          <tbody>
+            <tr><td>Yo</td><td><b>tengo</b></td></tr>
+            <tr><td>Tú</td><td><b>tienes</b></td></tr>
+            <tr><td>Él / Ella / Usted</td><td><b>tiene</b></td></tr>
+            <tr><td>Nosotros/as</td><td><b>tenemos</b></td></tr>
+            <tr><td>Vosotros/as</td><td><b>tenéis</b></td></tr>
+            <tr><td>Ellos / Ellas / Ustedes</td><td><b>tienen</b></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="pill-title">Usos: ¿para qué usamos el verbo TENER?</h4>
+        <ol class="goals">
+          <li><b>Posesión:</b> para indicar que algo nos pertenece. (Tengo un coche nuevo).</li>
+          <li><b>Edad:</b> en español, los años se tienen, no se es. (Tengo 25 años. No: Soy 25 años).</li>
+          <li><b>Sensaciones y estados:</b> para expresar hambre, sed, frío, calor, sueño, miedo, etc. (Tengo mucha hambre).</li>
+          <li><b>Expresar voluntad:</b> Tengo ganas de comer helado.</li>
+          <li><b>Necesidades:</b> Él tiene que estudiar.</li>
+        </ol>
+        <h4>Ejemplos adicionales</h4>
+        <div class="uses">
+          <div class="use"><b>Posesión</b><span>Ella tiene dos hermanos y un perro.</span></div>
+          <div class="use"><b>Edad</b><span>Nosotros tenemos 30 años.</span></div>
+          <div class="use"><b>Sensación</b><span>¿Tú tienes frío? Yo tengo mucho calor.</span></div>
+          <div class="use"><b>Obligación</b><span>Ustedes tienen que llegar temprano mañana.</span></div>
+          <div class="use"><b>Estado</b><span>Él tiene mucha suerte en los exámenes.</span></div>
+        </div>
+      </div>
+      <h3 class="act-h">Actividades · Verbo TENER</h3>
+      <div class="card act">
+        <div class="act-head"><h4>A. Arrastra la forma correcta del verbo TENER</h4><p>Arrastra cada palabra de las nubes hasta la oración donde corresponde.</p></div>
+        <div id="act-ten-a"></div>
+      </div>
+      <div class="card act">
+        <div class="act-head"><h4>B. Completa con el verbo TENER</h4><p>Escribe la forma correcta en cada espacio.</p></div>
+        <div id="act-ten-b"></div>
+      </div>
+      <div class="card act">
+        <div class="act-head"><h4>C. Ordena las palabras · Anagramas</h4><p>Pulsa PLAY. Después de la cuenta regresiva, forma cada frase con las letras que parpadean.</p></div>
+        <div id="act-ten-c"></div>
+      </div>
+    </div>
+
+    <!-- Números cardinales -->
+    <div class="subpanel" data-sub="num" hidden>
+      <h3 class="banner big">Los números cardinales del 1 al 1.000.000</h3>
+      <div class="card">
+        <p>Los números cardinales son los números que expresan cantidad, conteo o medida. Nos dicen «cuántos» hay de algo. Se utilizan con los sustantivos contables.</p>
+        <div class="scroll-x">
+        <table class="t nums">
+          <thead><tr><th>N.º</th><th>Escritura</th><th>N.º</th><th>Escritura</th><th>N.º</th><th>Escritura</th><th>N.º</th><th>Escritura</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>uno</td><td>11</td><td>once</td><td>21</td><td>veintiuno</td><td>31</td><td>treinta y uno</td></tr>
+            <tr><td>2</td><td>dos</td><td>12</td><td>doce</td><td>22</td><td>veintidós</td><td>40</td><td>cuarenta</td></tr>
+            <tr><td>3</td><td>tres</td><td>13</td><td>trece</td><td>23</td><td>veintitrés</td><td>50</td><td>cincuenta</td></tr>
+            <tr><td>4</td><td>cuatro</td><td>14</td><td>catorce</td><td>24</td><td>veinticuatro</td><td>60</td><td>sesenta</td></tr>
+            <tr><td>5</td><td>cinco</td><td>15</td><td>quince</td><td>25</td><td>veinticinco</td><td>70</td><td>setenta</td></tr>
+            <tr><td>6</td><td>seis</td><td>16</td><td>dieciséis</td><td>26</td><td>veintiséis</td><td>80</td><td>ochenta</td></tr>
+            <tr><td>7</td><td>siete</td><td>17</td><td>diecisiete</td><td>27</td><td>veintisiete</td><td>90</td><td>noventa</td></tr>
+            <tr><td>8</td><td>ocho</td><td>18</td><td>dieciocho</td><td>28</td><td>veintiocho</td><td>100</td><td>cien</td></tr>
+            <tr><td>9</td><td>nueve</td><td>19</td><td>diecinueve</td><td>29</td><td>veintinueve</td><td>1.000</td><td>mil</td></tr>
+            <tr><td>10</td><td>diez</td><td>20</td><td>veinte</td><td>30</td><td>treinta</td><td>1.000.000</td><td>un millón</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <div class="card hl-key">
+        <h3>Puntos clave</h3>
+        <div class="two">
+          <div class="keybox ok-box">
+            <h4>Del 21 al 29: en una sola palabra</h4>
+            <p><b>Correcto:</b> veintiuno, veintidós, veintitrés, veinticuatro, veinticinco, veintiséis, veintisiete, veintiocho, veintinueve.</p>
+            <p class="bad"><b>Incorrecto:</b> veinte y uno, veinte y dos.</p>
+          </div>
+          <div class="keybox ok-box">
+            <h4>Del 31 al 99: no se escriben en una sola palabra</h4>
+            <p><b>Correcto:</b> treinta y uno, cuarenta y cinco, noventa y nueve.</p>
+            <p class="bad"><b>Incorrecto:</b> treintayuno, cuarentaycinco, noventaynueve.</p>
+          </div>
+        </div>
+        <h4>Errores comunes que debes evitar</h4>
+        <ul class="errs">
+          <li><span class="x">✕ Veinte y cinco</span><span class="ok">✓ Veinticinco</span></li>
+          <li><span class="x">✕ Cincuenta y cinco y seis</span><span class="ok">✓ Cincuenta y seis</span></li>
+          <li><span class="x">✕ Cientoveinte</span><span class="ok">✓ Ciento veinte</span></li>
+          <li><span class="x">✕ Cincocientos</span><span class="ok">✓ Quinientos</span></li>
+          <li><span class="x">✕ Doscientos personas</span><span class="ok">✓ Doscientas personas</span></li>
+        </ul>
+      </div>
+      <h3 class="act-h">Actividad · Tablero de escritura</h3>
+      <div class="card act">
+        <div class="act-head"><p>Escribe aquí los números cardinales con letras. Por ejemplo: veintiuno, treinta y uno, quinientos.</p></div>
+        <div id="act-tablero"></div>
+      </div>
     </div>
   </article>
 </section>
@@ -383,6 +546,7 @@
   <p class="feedback" id="dq-feedback" role="status" aria-live="polite"></p>
 </dialog>
 
+<script src="juegos.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

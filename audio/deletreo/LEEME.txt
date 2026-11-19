@@ -1,0 +1,3 @@
+Audio de la profesora para la actividad Deletrea (.mp3).
+Nombre = la palabra en minúscula, sin tildes y con guiones: mariposa.mp3, balon.mp3, chocolate.mp3
+Si no existe, habla el navegador.
