@@ -896,3 +896,31 @@ input, select { font: inherit; color: inherit; }
 .lt.hit .c { color: var(--fuchsia); }
 .lt.hit { outline: 3px solid #f4a9d3; border-radius: 12px; background: #ffe3f2; }
 .lt.miss { outline: 3px dashed #b79af5; border-radius: 12px; background: #f1e8ff; }
+
+/* Errores comunes: tarjetas que se abren al tocar */
+.errcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 10px; }
+.errcard { display: flex; flex-direction: column; gap: 4px; text-align: left; background: #fff; border: 3px solid #d9b6f0; border-radius: 18px; padding: 10px 14px; cursor: pointer; box-shadow: 0 4px 0 #b79af5; font: inherit; color: var(--ink); min-height: 86px; }
+.errcard:hover { transform: translateY(-1px); }
+.errcard[aria-expanded="true"] { border-color: var(--fuchsia); box-shadow: 0 4px 0 #d86bad; background: #fff0f8; }
+.ec-bad { font-weight: 800; color: var(--bad); }
+.ec-ok { font-family: var(--font-display); color: var(--fuchsia); font-size: 1.1rem; animation: pop .25s both; }
+.ec-tap { font-size: .8rem; color: var(--ink-soft); font-weight: 700; }
+.ec-ok[hidden], .ec-tap[hidden] { display: none; }
+
+/* tarjetas que muestran la información al tocar (Básico 3) */
+.rcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.rcards.small { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin-top: 10px; }
+.conjcards { margin-top: 10px; }
+.rcard { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; min-height: 108px; background: #fff; border: 3px solid #f4a9d3; border-radius: 20px; padding: 10px 12px; cursor: pointer; font: inherit; color: var(--ink); box-shadow: 0 5px 0 #e590c2; transition: transform .12s; }
+.rcard:nth-child(even) { border-color: #c4aef7; box-shadow: 0 5px 0 #a78bf0; }
+.rcard:hover { transform: translateY(-2px); }
+.rcard[aria-expanded="true"] { background: #fff0f8; border-color: var(--fuchsia); box-shadow: 0 5px 0 #d86bad; }
+.rc-ic { font-size: 2rem; line-height: 1; }
+.rc-front { font-family: var(--font-display); font-size: 1.1rem; line-height: 1.15; }
+.small .rc-front { font-size: 1.4rem; color: var(--fuchsia); }
+.rc-tap { font-size: .78rem; font-weight: 700; color: var(--ink-soft); }
+.rc-back { display: flex; flex-direction: column; gap: 2px; font-weight: 700; animation: pop .25s both; }
+.rc-back[hidden], .rc-tap[hidden] { display: none; }
+.rc-form { font-family: var(--font-display); font-weight: 400; font-size: 1.3rem; color: var(--fuchsia); }
+.num-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.num-two .pill-title { display: inline-block; }

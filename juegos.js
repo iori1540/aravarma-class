@@ -519,7 +519,59 @@ function initSubtabs() {
 }
 
 /* ---------- Inicio de todo lo nuevo ---------- */
+/* ---------- Tarjetas que muestran la información al tocarlas (Básico 3) ---------- */
+const USE_ICON = ['🪪', '🌍', '💼', '⭐', '👥'];
+function revealCard(front, back, icon, sub) {
+  const c = h('button', { class: 'rcard', type: 'button', 'aria-expanded': 'false' },
+    icon ? h('span', { class: 'rc-ic', 'aria-hidden': 'true' }, icon) : null,
+    h('span', { class: 'rc-front' }, front),
+    sub ? h('span', { class: 'rc-sub' }, sub) : null,
+    h('span', { class: 'rc-tap' }, 'Toca para ver'),
+    h('span', { class: 'rc-back', hidden: true }, ...(Array.isArray(back) ? back : [back])));
+  c.addEventListener('click', () => {
+    const open = c.getAttribute('aria-expanded') !== 'true';
+    c.setAttribute('aria-expanded', String(open));
+    $('.rc-back', c).hidden = !open; $('.rc-tap', c).hidden = open;
+  });
+  return c;
+}
+function initRevealCards() {
+  // usos (Ser y Tener): cada uso es una tarjeta
+  $$('.subpanel[data-sub=ser] .uses, .subpanel[data-sub=tener] .uses').forEach(box => {
+    const tener = !!box.closest('[data-sub=tener]');
+    const cards = $$('.use', box).map((u, i) => revealCard($('b', u).textContent, h('span', null, $('span', u).textContent), tener ? ['🎁', '🎂', '🥶', '📋', '🍀'][i] : USE_ICON[i]));
+    box.replaceChildren(...cards); box.classList.add('rcards');
+  });
+  // conjugaciones: el pronombre al frente, la forma y el ejemplo al tocar
+  $$('.subpanel[data-sub=ser] table.conj, .subpanel[data-sub=tener] table.conj').forEach(t => {
+    const rows = $$('tbody tr', t).map(tr => { const td = $$('td', tr).map(x => x.textContent); return revealCard(td[0], [h('b', { class: 'rc-form' }, td[1]), td[2] ? h('span', null, td[2]) : null], '', null); });
+    const grid = h('div', { class: 'rcards conjcards' }, ...rows);
+    (t.closest('.scroll-x') || t).replaceWith(grid);
+  });
+  // números: cardinales y ordinales
+  const num = $('.subpanel[data-sub=num]'), anchor = num && $('.banner.big', num);
+  if (anchor) {
+    const CARD = [['1', 'uno'], ['2', 'dos'], ['3', 'tres'], ['10', 'diez'], ['20', 'veinte'], ['21', 'veintiuno'], ['30', 'treinta'], ['100', 'cien']];
+    const ORD = [['1.º', 'primero'], ['2.º', 'segundo'], ['3.º', 'tercero'], ['10.º', 'décimo'], ['20.º', 'vigésimo'], ['21.º', 'vigésimo primero'], ['30.º', 'trigésimo'], ['100.º', 'centésimo']];
+    const box = h('div', { class: 'card' },
+      h('div', { class: 'num-two' },
+        h('div', null, h('h4', { class: 'pill-title' }, 'Cardinales · ¿Cuántos?'), h('div', { class: 'rcards small' }, ...CARD.map(([n, w]) => revealCard(n, h('b', { class: 'rc-form' }, w))))),
+        h('div', null, h('h4', { class: 'pill-title' }, 'Ordinales · ¿En qué orden?'), h('div', { class: 'rcards small' }, ...ORD.map(([n, w]) => revealCard(n, h('b', { class: 'rc-form' }, w)))))));
+    anchor.after(box);
+  }
+}
+
+function initErrCards() {
+  $$('.errcard').forEach(c => c.addEventListener('click', () => {
+    const open = c.getAttribute('aria-expanded') !== 'true';
+    c.setAttribute('aria-expanded', String(open));
+    $('.ec-ok', c).hidden = !open; $('.ec-tap', c).hidden = open;
+  }));
+}
+
 function initJuegos() {
+  initRevealCards();
+  initErrCards();
   initPractica();
   quizList($('#act-ser-a'), { id: 'serA', items: SER_A, done: '¡Excelente! Usaste bien el verbo SER.' });
   initSerB();
