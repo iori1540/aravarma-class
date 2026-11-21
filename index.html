@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20261119s">
+<link rel="stylesheet" href="styles.css?v=20261121b">
 </head>
 <body>
 
@@ -73,6 +73,7 @@
     <button class="tab" role="tab" id="tab-bas-01" data-tab="bas-01" aria-controls="lesson-bas-01" type="button"><b>Básico 1</b> Saludos y presentaciones</button>
     <button class="tab" role="tab" id="tab-bas-02" data-tab="bas-02" aria-controls="lesson-bas-02" type="button"><b>Básico 2</b> El alfabeto y la pronunciación</button>
     <button class="tab" role="tab" id="tab-bas-03" data-tab="bas-03" aria-controls="lesson-bas-03" type="button"><b>Básico 3</b> Pronombres, verbos ser y tener, números</button>
+    <button class="tab" role="tab" id="tab-extras" data-tab="extras" aria-controls="lesson-extras" type="button"><b>Extras</b> Actividades extras</button>
   </div>
 
   <!-- ---------- BÁSICO 1 ---------- -->
@@ -510,6 +511,15 @@
       </div>
     </div>
   </article>
+
+  <!-- ---------- ACTIVIDADES EXTRAS ---------- -->
+  <article class="lesson" id="lesson-extras" role="tabpanel" aria-labelledby="tab-extras" hidden>
+    <div class="card lead">
+      <h3>Actividades extras</h3>
+      <p>Practica más con preguntas de alternativas. Marca tu respuesta y pulsa Validar para saber si es correcta.</p>
+    </div>
+    <div id="extras-mount" class="ex-wrap"></div>
+  </article>
 </section>
 
 <!-- ============ RULETA (al final) ============ -->
@@ -545,7 +555,8 @@
   <p class="feedback" id="dq-feedback" role="status" aria-live="polite"></p>
 </dialog>
 
-<script src="juegos.js?v=20261119s"></script>
-<script src="app.js?v=20261119s"></script>
+<script src="juegos.js?v=20261121b"></script>
+<script src="extras.js?v=20261121b"></script>
+<script src="app.js?v=20261121b"></script>
 </body>
 </html>

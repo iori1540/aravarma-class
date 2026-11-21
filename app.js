@@ -1188,7 +1188,7 @@ function initGreetings() {
 /* ============================================================
    Pestañas, botones del panel y opciones
    ============================================================ */
-const TABS = ['bas-01', 'bas-02', 'bas-03'];
+const TABS = ['bas-01', 'bas-02', 'bas-03', 'extras'];
 function showTab(id) {
   if (!TABS.includes(id)) id = 'bas-01';
   state.tab = id;
@@ -1246,6 +1246,7 @@ function initAll() {
   initBoard(); initSustituye(); initTexto();
   initGreetings();
   if (typeof initJuegos === 'function') initJuegos();
+  if (typeof initExtras === 'function') initExtras();
   renderProgress();
 }
 
