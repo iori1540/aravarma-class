@@ -1247,3 +1247,8 @@ img.tu-r { transform: scaleX(-1); animation-delay: -3s; }
 .reg-form > .rc-save { margin-top: 16px; }
 .reg-form > .rc-msg { margin-top: 6px; }
 .rc2-photo { clip-path: polygon(0 0, 70% 0, 70% 16%, 79% 32%, 100% 36%, 100% 100%, 0 100%); }
+/* Campos más anchos y correo con letra más pequeña para que quepa */
+.rc2-in { width: 62%; left: 27%; min-width: 0; box-sizing: border-box; padding-right: 3%; text-overflow: clip; }
+.rc2-in.r4 { font-size: 4.1cqw; }
+.rc2-in:focus { background: transparent; box-shadow: none; border-radius: 0; caret-color: #c21f9b; }
+.rc2-in:focus::placeholder { opacity: .45; }

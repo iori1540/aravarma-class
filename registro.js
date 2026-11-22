@@ -166,7 +166,7 @@
     avatar.addEventListener('click', () => file.click());
     avatar.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } });
     const mk = (label, name, type, val, auto, cls) => {
-      const inp = h('input', { class: 'rc2-in ' + cls, type: type || 'text', name, placeholder: label, autocomplete: auto || 'off', 'aria-label': label, maxlength: 60 });
+      const inp = h('input', { class: 'rc2-in ' + cls, type: type || 'text', name, placeholder: label, autocomplete: auto || 'off', 'aria-label': label, maxlength: 120, spellcheck: 'false', autocapitalize: 'off', autocorrect: 'off' });
       inp.value = val || ''; return inp;
     };
     const f1 = { inp: mk('Nombre', 'nombre', 'text', s && s.nombre, 'given-name', 'r1') };
