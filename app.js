@@ -168,7 +168,7 @@ const RULETA = [
    ============================================================ */
 const PG = [
   ['ordena', 'Ordena', 10], ['sopa', 'Sopa', 10], ['sd', 'Saludos', 10], ['dial', 'Diálogos', 2],
-  ['sust', 'Sustituye', 7], ['texto', 'Texto', 6], ['tabla', 'Tabla', 6], ['prac', 'Practiquemos', 32], ['escribe', 'Escribe', 9],
+  ['sust', 'Sustituye', 7], ['texto', 'Texto', 6], ['tabla', 'Tabla', 6], ['prac', 'Practiquemos', 32], ['escribe', 'Escribe', 33],
   ['serA', 'Ser A', 8], ['serB', 'Ser B', 17], ['serC', 'Ser C', 6], ['tenA', 'Tener A', 6], ['tenB', 'Tener B', 5], ['tenC', 'Anagramas', 4],
   ['ruleta', 'Ruleta', RULETA.length],
 ];

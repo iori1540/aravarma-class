@@ -1125,3 +1125,9 @@ img.tu-r { transform: scaleX(-1); animation-delay: -3s; }
 /* Mariposa lila como personaje de los juegos */
 .gp .mascot.mascot-bf { width: auto; height: 90px; object-fit: contain; display: block; margin: 0 auto; filter: drop-shadow(0 4px 5px rgba(100, 60, 170, .28)); }
 .gp-mascot.big .mascot.mascot-bf { width: auto; height: 175px; animation: bob 2s ease-in-out infinite; }
+/* Imagen de la pista siempre dentro del cuadro */
+.gp-clue { box-sizing: border-box; overflow: hidden; }
+.gp-clue img, .gp-clue svg { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.gp-clue { display: flex; align-items: center; justify-content: center; }
+.gp-clue img, .gp-clue svg { width: auto; height: auto; max-width: 118px; max-height: 118px; }
+.gp-clue svg { width: 118px; height: 118px; }
