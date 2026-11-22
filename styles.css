@@ -1100,3 +1100,7 @@ img.tu-r { transform: scaleX(-1); animation-delay: -3s; }
 @media (prefers-reduced-motion: reduce) { img.rose-photo { animation: none; } }
 .gs-bf { filter: drop-shadow(0 5px 5px rgba(80, 50, 160, .3)); animation: bfhover 4.5s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .gs-bf { animation: none; } }
+.gs-side { align-self: start; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.gs-side .gs-sub { margin: 0; }
+.gs-home { display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 620px) { .gs-side { align-items: center; } }

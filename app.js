@@ -1171,7 +1171,10 @@ function initGreetings() {
     stage.replaceChildren(
       h('div', { class: 'gs-pic' + (animate ? ' swap' : ''), html: g ? `<svg viewBox="0 0 420 230" role="img" aria-label="Escena: ${g.t}">${g.svg}</svg>` : intro }),
       h('p', { class: 'gs-text' }, g ? g.t : 'Saludos'),
-      h('p', { class: 'gs-sub' }, g ? g.sub : 'Toca un saludo para ver su imagen y escucharlo.'));
+      h('div', { class: 'gs-side' },
+        h('p', { class: 'gs-sub' }, g ? g.sub : 'Toca un saludo para ver su imagen y escucharlo.'),
+        g ? h('button', { class: 'btn gs-home', type: 'button', html: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span>Inicio</span>',
+          onclick: () => { $$('.dt[data-g]').forEach(b => b.setAttribute('aria-pressed', 'false')); draw(null, true); } }) : null));
   };
   $$('.dt[data-g]').forEach(btn => {
     btn.onclick = () => {
