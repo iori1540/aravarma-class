@@ -1098,3 +1098,5 @@ img.rose-photo { width: clamp(48px, 6vw, 78px); height: auto; object-fit: contai
 img.tu-r { transform: scaleX(-1); animation-delay: -3s; }
 @keyframes rosesway { 0%, 100% { rotate: -2deg; } 50% { rotate: 2deg; } }
 @media (prefers-reduced-motion: reduce) { img.rose-photo { animation: none; } }
+.gs-bf { filter: drop-shadow(0 5px 5px rgba(80, 50, 160, .3)); animation: bfhover 4.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .gs-bf { animation: none; } }

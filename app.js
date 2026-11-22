@@ -1165,7 +1165,7 @@ const GREET = {
 function initGreetings() {
   const stage = $('#greet-stage');
   if (!stage) return;
-  const intro = `<svg viewBox="0 0 420 230" role="img" aria-label="Toca un saludo"><rect width="420" height="230" fill="#f3e7ff"/><use href="#butterfly" x="150" y="40" width="120" height="96"/><text x="210" y="190" text-anchor="middle" font-family="Lilita One, Baloo 2, sans-serif" font-size="24" fill="#7a3f7f">Toca un saludo</text></svg>`;
+  const intro = `<svg viewBox="0 0 420 230" role="img" aria-label="Toca un saludo"><rect width="420" height="230" fill="#f3e7ff"/><image class="gs-bf" href="images/mariposas/azul.webp" x="148" y="28" width="124" height="114" preserveAspectRatio="xMidYMid meet"/><text x="210" y="190" text-anchor="middle" font-family="Lilita One, Baloo 2, sans-serif" font-size="24" fill="#7a3f7f">Toca un saludo</text></svg>`;
   const draw = (key, animate) => {
     const g = GREET[key];
     stage.replaceChildren(
