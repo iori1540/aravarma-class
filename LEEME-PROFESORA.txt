@@ -1,0 +1,34 @@
+VER A TODOS LOS ESTUDIANTES (nombre y avance) DESDE LA COMPUTADORA DE LA PROFESORA
+===================================================================================
+La página guarda cada registro en el navegador del estudiante. Para que la profesora vea a
+TODOS, los avances se envían a una hoja de cálculo de Google (gratis). Se hace una sola vez:
+
+1) Entra a https://sheets.google.com con la cuenta de la profesora y crea una hoja nueva
+   (nombre sugerido: "Aravarma - Estudiantes").
+2) Menú Extensiones > Apps Script. Borra lo que haya y pega TODO el contenido del archivo
+   apps-script/Code.gs.
+3) En la primera línea del código cambia  const PIN = '1234';  por una clave que solo
+   la profesora conozca. Guarda (icono del disquete).
+4) Botón azul "Implementar" > "Nueva implementación" > engranaje > "Aplicación web".
+      - Ejecutar como:      Yo
+      - Quién tiene acceso: Cualquier persona
+   Pulsa "Implementar", acepta los permisos de Google y COPIA la "URL de la aplicación web"
+   (termina en /exec).
+5) Abre el archivo config.js del proyecto y pega la URL entre las comillas:
+      window.ARAVARMA_SYNC = { url: 'https://script.google.com/macros/s/..../exec' };
+6) Sube los cambios a GitHub (git add . / git commit -m "Conecta hoja" / git push).
+
+USO
+ - Cada estudiante se registra en el botón "Registro". Cuando guarda su ficha o avanza, sus datos
+   llegan solos a la hoja (pestaña "Estudiantes").
+ - La profesora abre Registro > "Estudiantes", escribe su clave y pulsa "Ver a todos los
+   estudiantes": ve nombre, puesto, avance por Básico 1, 2 y 3, extras, ruleta y tarjetas,
+   y puede descargarlo en Excel. También puede abrir la hoja de Google directamente.
+
+IMPORTANTE
+ - Si cambias el código de Apps Script, vuelve a "Implementar" > "Administrar implementaciones"
+   > editar > "Nueva versión".
+ - La hoja contiene nombres y correos: si hay menores de edad, conviene tener el permiso de sus
+   familias y mantener la hoja privada (no la compartas).
+ - La clave protege la vista dentro de la página; quien tenga la URL de la aplicación y la clave
+   puede leer la lista. No publiques la clave.

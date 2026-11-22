@@ -16,6 +16,7 @@
     cam: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
   };
 
+  const CFG = window.ARAVARMA_SYNC || {};
   /* ---------- datos ---------- */
   let db = load();
   function load() {
@@ -24,8 +25,24 @@
   }
   let saveFailed = false;
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(db)); saveFailed = false; }
+    try { localStorage.setItem(KEY, JSON.stringify(db)); saveFailed = false; schedulePush(); }
     catch (e) { saveFailed = true; flash('No se pudo guardar en este navegador (poco espacio). Prueba con una foto más pequeña.'); }
+  }
+  /* envío a la hoja de la profesora (Google Sheets) */
+  let pushTimer = null;
+  function payload(s) {
+    const pct = id => summary(s, id).pct;
+    return { id: s.id, nombre: s.nombre, apellidos: s.apellidos, puesto: s.grado, correo: s.correo,
+      b1: pct('lesson-bas-01'), b2: pct('lesson-bas-02'), b3: pct('lesson-bas-03'), ex: pct('lesson-extras'), ru: pct('ruleta-end'),
+      tarjetas: totalCards(s), palabras: Object.values(s.cards).map(c => c.word).join(', '), detalle: JSON.stringify(s.best) };
+  }
+  function schedulePush() {
+    if (!CFG.url) return;
+    clearTimeout(pushTimer);
+    pushTimer = setTimeout(() => {
+      const s = cur(); if (!s || !s.nombre) return;
+      try { fetch(CFG.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload(s)) }).catch(() => {}); } catch (e) { /* sin conexión */ }
+    }, 1500);
   }
   const uid = () => 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const cur = () => db.students.find(s => s.id === db.active) || null;
@@ -239,7 +256,7 @@
     const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + text], { type: 'text/csv;charset=utf-8' })), download: 'estudiantes-aravarma.csv' });
     document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
-  function viewList() {
+  function localList() {
     if (!db.students.length) return h('p', { class: 'reg-empty' }, 'Aún no hay estudiantes registrados.');
     const tb = h('tbody');
     db.students.forEach(s => {
@@ -261,6 +278,54 @@
       h('div', { class: 'scroll-x' }, h('table', { class: 'rl-t' },
         h('thead', null, h('tr', null, h('th', null, 'Estudiante'), h('th', null, 'Básico 1'), h('th', null, 'Básico 2'), h('th', null, 'Básico 3'), h('th', null, 'Tarjetas'), h('th', null, ''))), tb)),
       h('div', { class: 'reg-row' }, h('button', { class: 'btn', type: 'button', onclick: csv }, 'Descargar lista (Excel)')));
+  }
+
+  /* --- Vista de la profesora: todos los estudiantes (desde la hoja) --- */
+  let pinMem = '';
+  function remoteCsv(rows) {
+    const head = ['Nombre', 'Apellidos', 'Puesto', 'Correo', 'Básico 1 %', 'Básico 2 %', 'Básico 3 %', 'Actividades extras %', 'Ruleta %', 'Tarjetas', 'Palabras', 'Actualizado'];
+    const text = [head, ...rows.map(r => [r.nombre, r.apellidos, r.puesto, r.correo, r.b1, r.b2, r.b3, r.ex, r.ru, r.tarjetas, r.palabras, r.actualizado])]
+      .map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';')).join('\r\n');
+    const a = h('a', { href: URL.createObjectURL(new Blob(['\ufeff' + text], { type: 'text/csv;charset=utf-8' })), download: 'todos-los-estudiantes.csv' });
+    document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function teacherBox() {
+    const out = h('div', { class: 'tb-out' });
+    const pin = h('input', { class: 'tb-pin', type: 'password', placeholder: 'Clave de la profesora', autocomplete: 'off', 'aria-label': 'Clave de la profesora' });
+    pin.value = pinMem;
+    const msg = h('p', { class: 'reg-note', role: 'status', 'aria-live': 'polite' });
+    async function load() {
+      pinMem = pin.value.trim();
+      if (!pinMem) { msg.textContent = 'Escribe la clave de la profesora.'; return; }
+      msg.textContent = 'Cargando…'; out.replaceChildren();
+      try {
+        const r = await fetch(CFG.url + (CFG.url.includes('?') ? '&' : '?') + 'action=list&pin=' + encodeURIComponent(pinMem));
+        const d = await r.json();
+        if (d.error) { msg.textContent = d.error === 'pin' ? 'La clave no es correcta.' : 'No se pudo leer la hoja.'; return; }
+        const rows = d.rows || [];
+        msg.textContent = rows.length ? `${rows.length} estudiante${rows.length === 1 ? '' : 's'} registrado${rows.length === 1 ? '' : 's'}.` : 'Aún no hay estudiantes en la hoja.';
+        if (!rows.length) return;
+        const tb = h('tbody');
+        rows.forEach(r => tb.append(h('tr', null,
+          h('td', { class: 'st-n' }, h('span', { class: 'ph', html: IC.user }), h('span', null, h('b', null, [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'Sin nombre'), h('small', null, r.puesto || r.correo || ''))),
+          ...[r.b1, r.b2, r.b3, r.ex, r.ru].map(p => h('td', { class: 'st-p' }, h('span', { class: 'rp-m' }, h('i', { style: `width:${+p || 0}%` })), h('b', null, (+p || 0) + '%'))),
+          h('td', { class: 'st-c' }, h('span', { html: IC.star }), String(r.tarjetas || 0)),
+          h('td', { class: 'st-d' }, r.actualizado ? new Date(r.actualizado).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }) : ''))));
+        out.append(h('div', { class: 'scroll-x' }, h('table', { class: 'rl-t' },
+          h('thead', null, h('tr', null, ...['Estudiante', 'Básico 1', 'Básico 2', 'Básico 3', 'Extras', 'Ruleta', 'Tarjetas', 'Actualizado'].map(t => h('th', null, t)))), tb)),
+          h('div', { class: 'reg-row' }, h('button', { class: 'btn', type: 'button', onclick: () => remoteCsv(rows) }, 'Descargar todos (Excel)')));
+      } catch (e) { msg.textContent = 'No se pudo conectar con la hoja. Revisa tu conexión.'; }
+    }
+    pin.addEventListener('keydown', e => { if (e.key === 'Enter') load(); });
+    return h('section', { class: 'tb' }, h('h3', null, 'Vista de la profesora'),
+      h('p', { class: 'reg-note' }, 'Aquí aparecen todos los estudiantes que se registraron, desde cualquier computadora.'),
+      h('div', { class: 'reg-row' }, pin, h('button', { class: 'btn', type: 'button', onclick: load }, 'Ver a todos los estudiantes')), msg, out);
+  }
+  function viewList() {
+    const wrap = h('div', { class: 'reg-all' });
+    wrap.append(CFG.url ? teacherBox() : h('p', { class: 'reg-warn' }, 'Para que la profesora vea a todos los estudiantes desde su computadora hay que conectar la hoja de cálculo (ver LEEME-PROFESORA.txt). Mientras tanto, esta lista muestra solo a los estudiantes de este navegador.'));
+    wrap.append(h('h3', { class: 'tb-h' }, 'En este navegador'), localList());
+    return wrap;
   }
 
   /* ---------- arranque ---------- */

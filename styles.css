@@ -1252,3 +1252,9 @@ img.tu-r { transform: scaleX(-1); animation-delay: -3s; }
 .rc2-in.r4 { font-size: 4.1cqw; }
 .rc2-in:focus { background: transparent; box-shadow: none; border-radius: 0; caret-color: #c21f9b; }
 .rc2-in:focus::placeholder { opacity: .45; }
+.reg-warn { background: #fff7d6; border: 3px solid #f0c94a; border-radius: 16px; padding: 10px 14px; font-weight: 700; color: #6b4a00; margin: 4px 0 14px; }
+.tb { background: #fff; border: 3px solid #ff77b8; border-radius: 20px; padding: 14px 16px; margin-bottom: 16px; }
+.tb h3, .tb-h { margin: 0 0 6px; font-family: 'Lilita One', var(--font-body, inherit); color: var(--fuchsia); }
+.tb-h { margin-top: 8px; }
+.tb-pin { padding: 8px 14px; border-radius: 999px; border: 3px solid #7f58d6; font: 700 .95rem var(--font-body, inherit); min-width: 200px; }
+.st-d { white-space: nowrap; font-size: .8rem; color: var(--ink-soft); }
