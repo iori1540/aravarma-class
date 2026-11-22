@@ -1,3 +1,6 @@
 Audio de la profesora para Practiquemos, Escribe la palabra y Anagramas (.mp3).
 Nombre = palabra o frase en minúscula, sin tildes, espacios como guion: pato.mp3, balon.mp3, tu-tienes.mp3, nosotros-tenemos.mp3
 Si no existe, habla el navegador.
+
+Palabras nuevas de Practiquemos (casa y las siguientes): casa, dado, hipopotamo, rinoceronte, barco, chimenea, llama, faro, xilofono, galleta, tortuga, queso, jarra, uvas, nido, avestruz, olla, gato, yoyo, vaca, zorro, rana, kiwi, iglesia.
+Ejemplo: hipopotamo.mp3, xilofono.mp3, yoyo.mp3
