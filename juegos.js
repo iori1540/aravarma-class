@@ -462,6 +462,7 @@ const PRACTICA = [
   { word: 'rana', art: ART.img('rana', 'Una rana verde'), opts: ['/r/', '/l/', '/n/'], ans: '/r/' },
   { word: 'kiwi', art: ART.img('kiwi', 'Un kiwi'), opts: ['/k/', '/g/', '/p/'], ans: '/k/' },
   { word: 'iglesia', art: ART.img('iglesia', 'Una iglesia'), opts: ['/i/', '/e/', '/l/'], ans: '/i/' },
+  { word: 'ñu', art: ART.img('nu', 'Un ñu'), opts: ['/ñ/', '/n/', '/m/'], ans: '/ñ/' },
 ];
 const ESCRIBE = [
   { word: 'chocolate', pic: ART.chocolate }, { word: 'pato', pic: ART.img('pato', 'Un patito amarillo') }, { word: 'balón', pic: ART.img('balon', 'Un balón de fútbol') },
