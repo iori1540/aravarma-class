@@ -147,7 +147,10 @@ function initExtras() {
   }
   function paintStart() {
     root.replaceChildren(h('div', { class: 'ex-start' },
-      h('div', { class: 'ex-mascot', html: MASCOT }),
+      h('div', { class: 'ex-hummer' }, h('div', { class: 'hm', role: 'img', 'aria-label': 'Colibrí aleteando sobre una flor con gotas de rocío' },
+        h('img', { class: 'hm-base', src: 'images/mariposas/colibri.webp', alt: '' }),
+        h('img', { class: 'hm-wing hm-w2', src: 'images/mariposas/colibri.webp', alt: '' }),
+        h('img', { class: 'hm-wing hm-w1', src: 'images/mariposas/colibri.webp', alt: '' }))),
       h('h4', { class: 'ex-title big' }, 'Actividades extras'),
       h('p', null, `${N} preguntas para practicar. Lee, marca una alternativa y pulsa Validar. Si te equivocas, ¡inténtalo otra vez!`),
       h('button', { class: 'ex-go', type: 'button', onclick: start }, 'COMENZAR')));
