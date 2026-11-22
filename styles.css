@@ -1084,3 +1084,11 @@ input, select { font: inherit; color: inherit; }
   .ex *, .ex-fly svg { animation: none !important; transition: none !important; }
 }
 @media (max-width: 560px) { .ex { padding: 12px; } .ex-q { margin-left: 34px; font-size: 1.05rem; } .ex-arrow { width: 50px; height: 50px; } }
+
+/* Mariposas reales en la portada (fotos recortadas) */
+img.bf-photo { height: auto; object-fit: contain; filter: drop-shadow(0 6px 6px rgba(138, 31, 102, .32)); animation: bfhover 5s ease-in-out infinite; }
+img.bf-a { width: clamp(70px, 9vw, 118px); }
+img.bf-b { width: clamp(80px, 10vw, 132px); animation-delay: -2s; }
+img.bf-c { width: clamp(44px, 5vw, 66px); transform: rotate(8deg) scaleX(-1); animation-delay: -3.5s; }
+@keyframes bfhover { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+@media (prefers-reduced-motion: reduce) { img.bf-photo { animation: none; } }
