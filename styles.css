@@ -1092,3 +1092,9 @@ img.bf-b { width: clamp(80px, 10vw, 132px); animation-delay: -2s; }
 img.bf-c { width: clamp(44px, 5vw, 66px); transform: rotate(8deg) scaleX(-1); animation-delay: -3.5s; }
 @keyframes bfhover { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
 @media (prefers-reduced-motion: reduce) { img.bf-photo { animation: none; } }
+
+/* Rosa real en la portada (foto recortada) */
+img.rose-photo { width: clamp(48px, 6vw, 78px); height: auto; object-fit: contain; filter: drop-shadow(0 6px 6px rgba(138, 31, 102, .3)); transform-origin: 50% 100%; animation: rosesway 6s ease-in-out infinite; }
+img.tu-r { transform: scaleX(-1); animation-delay: -3s; }
+@keyframes rosesway { 0%, 100% { rotate: -2deg; } 50% { rotate: 2deg; } }
+@media (prefers-reduced-motion: reduce) { img.rose-photo { animation: none; } }
