@@ -1,3 +1,4 @@
-Pon aquí la voz de la profesora para el abecedario (formato .mp3).
-Nombre del archivo = la letra en minúscula: a.mp3, b.mp3, c.mp3 ... n.mp3, enie.mp3 (para la Ñ), z.mp3
+Voz de la profesora para el abecedario (ya incluida, 27 archivos .mp3).
+Nombre del archivo = la letra en minúscula: a.mp3, b.mp3 ... n.mp3, enie.mp3 (para la Ñ), ... z.mp3
+Para cambiar una letra, reemplaza ese archivo con el mismo nombre.
 Si un archivo no existe, la página usa la voz del navegador para esa letra.
