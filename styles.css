@@ -1122,3 +1122,6 @@ img.tu-r { transform: scaleX(-1); animation-delay: -3s; }
 @keyframes hmbody { 0%, 100% { transform: translateY(0) rotate(-.6deg); } 50% { transform: translateY(-2px) rotate(.6deg); } }
 @keyframes hmhover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 @media (prefers-reduced-motion: reduce) { .ex-hummer .hm, .ex-hummer .hm-base, .ex-hummer .hm-wing { animation: none; } }
+/* Mariposa lila como personaje de los juegos */
+.gp .mascot.mascot-bf { width: auto; height: 90px; object-fit: contain; display: block; margin: 0 auto; filter: drop-shadow(0 4px 5px rgba(100, 60, 170, .28)); }
+.gp-mascot.big .mascot.mascot-bf { width: auto; height: 175px; animation: bob 2s ease-in-out infinite; }

@@ -49,6 +49,7 @@ const MASCOT = `<svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
   <circle cx="30" cy="54" r="5" fill="#ff9ab8" opacity=".7"/><circle cx="70" cy="54" r="5" fill="#ff9ab8" opacity=".7"/>
   <path d="M42 54 q8 9 16 0" fill="none" stroke="#4a1650" stroke-width="3" stroke-linecap="round"/>
 </svg>`;
+const GAME_MASCOT = `<img class="mascot mascot-bf" src="images/mariposas/mariposa-lila.webp" alt="" aria-hidden="true">`;
 const ART = {
   chocolate: `<svg viewBox="0 0 80 110" role="img" aria-label="Una barra de chocolate"><rect x="8" y="6" width="64" height="72" rx="9" fill="#8a4b2f" stroke="#5c2f1b" stroke-width="3"/><path d="M40 6v72M8 42h64" stroke="#5c2f1b" stroke-width="3"/><rect x="13" y="11" width="22" height="26" rx="4" fill="#a8603d"/><rect x="45" y="11" width="22" height="26" rx="4" fill="#a8603d"/><path d="M8 70 L40 60 L72 70 V98 a9 9 0 0 1-9 9 H17 a9 9 0 0 1-9-9Z" fill="#ef5b5b" stroke="#a52f3b" stroke-width="3" stroke-linejoin="round"/><path d="M8 70 L40 60 L72 70 L72 78 L40 70 L8 78Z" fill="#ffc2d6"/><circle cx="30" cy="88" r="4" fill="#4a1650"/><circle cx="50" cy="88" r="4" fill="#4a1650"/><path d="M34 95 q6 5 12 0" fill="none" stroke="#4a1650" stroke-width="2.6" stroke-linecap="round"/></svg>`,
   sol: `<svg viewBox="0 0 100 100" role="img" aria-label="El sol"><g stroke="#f0a91f" stroke-width="6" stroke-linecap="round"><path d="M50 6v14M50 80v14M6 50h14M80 50h14M19 19l10 10M71 71l10 10M81 19L71 29M29 71L19 81"/></g><circle cx="50" cy="50" r="26" fill="#ffd84a" stroke="#f0a91f" stroke-width="4"/><circle cx="41" cy="46" r="3.5" fill="#4a1650"/><circle cx="59" cy="46" r="3.5" fill="#4a1650"/><path d="M42 58 q8 8 16 0" fill="none" stroke="#4a1650" stroke-width="3" stroke-linecap="round"/></svg>`,
@@ -97,13 +98,13 @@ function createGame(mount, cfg) {
   const btnHint = ctl('Pista', ICO.hint, () => mode && mode.hint());
   const btnInfo = ctl('Cómo se juega', ICO.info, () => { info.hidden = !info.hidden; });
   const side = h('aside', { class: 'gp-side' },
-    h('div', { class: 'gp-mascot', html: MASCOT }),
+    h('div', { class: 'gp-mascot', html: GAME_MASCOT }),
     h('div', { class: 'gp-ctls' }, btnRestart, btnSound, btnFull, btnHint, btnInfo),
     timeEl, bestEl, scoreEl, clue);
 
   const playBtn = h('button', { class: 'gp-play', type: 'button', onclick: () => start() }, 'PLAY');
   const startView = h('div', { class: 'gp-start' },
-    h('div', { class: 'gp-mascot big', html: MASCOT }), h('h4', null, cfg.title), h('p', null, cfg.blurb), playBtn);
+    h('div', { class: 'gp-mascot big', html: GAME_MASCOT }), h('h4', null, cfg.title), h('p', null, cfg.blurb), playBtn);
   const countView = h('div', { class: 'gp-count', hidden: true, 'aria-live': 'assertive' });
   const stage = h('div', { class: 'gp-stage', hidden: true }, main, side);
   const endView = h('div', { class: 'gp-end', hidden: true });
@@ -156,7 +157,7 @@ function createGame(mount, cfg) {
     if (first) { g.best = g.ms; saveBest(cfg.id, g.ms); bestEl.lastChild.textContent = fmtTime(g.best); }
     setPhase('end');
     endView.replaceChildren(
-      h('div', { class: 'gp-mascot big', html: MASCOT }),
+      h('div', { class: 'gp-mascot big', html: GAME_MASCOT }),
       h('h4', null, '¡Lo lograste!'),
       h('p', null, `Puntaje: ${g.score} de ${total} · Tiempo: ${fmtTime(g.ms)}${first ? ' · ¡Nuevo mejor tiempo!' : ''}`),
       h('button', { class: 'gp-play', type: 'button', onclick: () => start() }, 'Jugar otra vez'));
