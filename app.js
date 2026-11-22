@@ -326,6 +326,39 @@ function createBoard(root, opts = {}) {
       h('button', { class: 'wb-mini', type: 'button', 'aria-label': 'Mover el cursor a la izquierda', onclick: () => move(-1) }, '◀'),
       h('button', { class: 'wb-mini', type: 'button', 'aria-label': 'Mover el cursor a la derecha', onclick: () => move(1) }, '▶')));
   const extra = (opts.extra || []).filter(Boolean);
+  if (opts.mic) {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const msg = h('p', { class: 'feedback mic-msg', role: 'status', 'aria-live': 'polite' });
+    let rec = null, listening = false;
+    const btn = h('button', { class: 'btn mic', type: 'button', 'aria-pressed': 'false', html: ICON_MIC + '<span>Pronunciar con el micrófono</span>', onclick: () => toggle() });
+    const stop = () => { try { if (rec) rec.abort(); } catch (e) { /* nada */ } listening = false; btn.setAttribute('aria-pressed', 'false'); btn.classList.remove('live'); };
+    const lettersOf = t => [...fold(t)].filter(c => /[a-zñ]/.test(c));
+    function toggle() {
+      if (listening) { stop(); msg.className = 'feedback mic-msg'; msg.textContent = ''; return; }
+      if (!SR) { msg.className = 'feedback no mic-msg'; msg.textContent = 'Este navegador no escucha el micrófono. Prueba con Chrome o Edge.'; return; }
+      const all = tokens.filter(t => !t.gap && /[\p{L}]/u.test(t.ch)).map(t => t.ch);
+      if (!all.length) { msg.className = 'feedback hint mic-msg'; msg.textContent = 'Primero toca una letra para subirla al tablero.'; return; }
+      const word = all.join(''), last = all[all.length - 1];
+      rec = new SR(); rec.lang = 'es-PE'; rec.interimResults = false; rec.maxAlternatives = 5; rec.continuous = false;
+      rec.onresult = ev => {
+        const texts = [...ev.results[0]].map(a => a.transcript);
+        const okWord = matchSpelling(texts, word).full;
+        const okLast = !okWord && all.length > 1 && matchSpelling(texts, last).full;
+        if (okWord || okLast) {
+          const said = okWord ? (all.length > 1 ? `«${word}»` : `la letra ${word.toUpperCase()}`) : `la letra ${last.toUpperCase()}`;
+          msg.className = 'feedback ok mic-msg'; msg.textContent = `✓ Válido. Pronunciaste ${said} correctamente.`;
+          surface.classList.remove('okflash'); void surface.offsetWidth; surface.classList.add('okflash');
+        } else {
+          msg.className = 'feedback no mic-msg';
+          msg.textContent = `Escuché: «${texts[0]}». Inténtalo otra vez. Di: ${(all.length > 1 ? all : [last]).map(c => letterName(c)).join(', ')}.`;
+        }
+      };
+      rec.onerror = ev => { msg.className = 'feedback no mic-msg'; msg.textContent = ev.error === 'not-allowed' || ev.error === 'service-not-allowed' ? 'Permite el micrófono en tu navegador para usar esta función.' : ev.error === 'no-speech' ? 'No te escuché. Inténtalo otra vez.' : 'No pude escuchar. Inténtalo otra vez.'; };
+      rec.onend = () => { listening = false; btn.setAttribute('aria-pressed', 'false'); btn.classList.remove('live'); };
+      try { rec.start(); listening = true; btn.setAttribute('aria-pressed', 'true'); btn.classList.add('live'); msg.className = 'feedback hint mic-msg'; msg.textContent = all.length > 1 ? `Escuchando… di las letras de «${word}» una por una.` : `Escuchando… di el nombre de la letra ${last.toUpperCase()}.`; } catch (e) { stop(); }
+    }
+    extra.push(h('div', { class: 'wb-mic' }, btn, msg));
+  }
 
   root.replaceChildren(h('div', { class: 'wb' + (opts.compact ? ' compact' : '') + (opts.classic ? ' classic' : '') },
     opts.compact || opts.classic ? null : h('h3', { class: 'wb-title' }, 'Tablero de escritura'),
@@ -1093,7 +1126,7 @@ function initTexto() {
 /* ============================================================
    BAS-02 · Actividad 1 · Practica el nombre de las letras
    ============================================================ */
-function initBoard() { createBoard($('#act-board'), { classic: true }); }
+function initBoard() { createBoard($('#act-board'), { classic: true, mic: true }); }
 
 
 /* ============================================================
