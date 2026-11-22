@@ -149,30 +149,30 @@
     const s = editId === null ? null : (editId ? db.students.find(x => x.id === editId) : cur());
     const isNew = !s;
     photoTmp = s ? s.foto || '' : '';
-    const avatar = h('div', { class: 'rc-photo' });
-    const drawPhoto = () => { avatar.replaceChildren(photoTmp ? h('img', { src: photoTmp, alt: 'Foto del estudiante' }) : h('span', { class: 'rc-ph', html: IC.user }), h('span', { class: 'rc-cam', html: IC.cam })); };
+    const avatar = h('div', { class: 'rc2-photo', role: 'button', tabindex: '0', title: 'Toca para subir la foto', 'aria-label': 'Subir la foto del estudiante' });
+    const drawPhoto = () => { if (photoTmp) avatar.replaceChildren(h('img', { src: photoTmp, alt: 'Foto del estudiante' })); else avatar.replaceChildren(); };
     drawPhoto();
     const file = h('input', { type: 'file', accept: 'image/*', class: 'sr-only', 'aria-label': 'Subir foto' });
     file.addEventListener('change', () => {
       const f = file.files && file.files[0]; if (!f) return;
       const img = new Image(), url = URL.createObjectURL(f);
       img.onload = () => {
-        const S = 220, c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d');
+        const S = 260, c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d');
         const m = Math.min(img.width, img.height), sx = (img.width - m) / 2, sy = (img.height - m) / 2;
         x.drawImage(img, sx, sy, m, m, 0, 0, S, S); photoTmp = c.toDataURL('image/jpeg', 0.82); URL.revokeObjectURL(url); drawPhoto();
       };
       img.onerror = () => URL.revokeObjectURL(url); img.src = url;
     });
     avatar.addEventListener('click', () => file.click());
-    const mk = (icon, label, name, type, val, auto) => {
-      const inp = h('input', { class: 'rc-in', type: type || 'text', name, placeholder: label, autocomplete: auto || 'off', 'aria-label': label, maxlength: 60 });
-      inp.value = val || '';
-      return { inp, row: h('label', { class: 'rc-f' }, h('span', { class: 'rc-i', html: icon }), inp) };
+    avatar.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } });
+    const mk = (label, name, type, val, auto, cls) => {
+      const inp = h('input', { class: 'rc2-in ' + cls, type: type || 'text', name, placeholder: label, autocomplete: auto || 'off', 'aria-label': label, maxlength: 60 });
+      inp.value = val || ''; return inp;
     };
-    const f1 = mk(IC.user, 'Nombre', 'nombre', 'text', s && s.nombre, 'given-name');
-    const f2 = mk(IC.user, 'Apellidos', 'apellidos', 'text', s && s.apellidos, 'family-name');
-    const f3 = mk(IC.school, 'Grado o grupo', 'grado', 'text', s && s.grado);
-    const f4 = mk(IC.mail, 'Correo', 'correo', 'email', s && s.correo, 'email');
+    const f1 = { inp: mk('Nombre', 'nombre', 'text', s && s.nombre, 'given-name', 'r1') };
+    const f2 = { inp: mk('Apellidos', 'apellidos', 'text', s && s.apellidos, 'family-name', 'r2') };
+    const f3 = { inp: mk('Puesto', 'grado', 'text', s && s.grado, 'off', 'r3') };
+    const f4 = { inp: mk('Correo', 'correo', 'email', s && s.correo, 'email', 'r4') };
     const msg = h('p', { class: 'rc-msg', role: 'status', 'aria-live': 'polite' });
     const saveB = h('button', { class: 'rc-save', type: 'button', onclick: () => {
       const nombre = f1.inp.value.trim();
@@ -184,11 +184,9 @@
       msg.textContent = '¡Registro guardado!'; msg.className = 'rc-msg ok';
       setTimeout(() => { if (dlg.open && tab === 'registro') paintBody(); }, 900);
     } }, isNew ? 'Guardar registro' : 'Actualizar registro');
-    const card = h('div', { class: 'reg-card' },
-      h('span', { class: 'rc-bf', html: '<svg viewBox="0 0 100 80" aria-hidden="true"><use href="#butterfly"/></svg>' }),
-      h('div', { class: 'rc-frame' }, avatar, file),
-      f1.row, f2.row, f3.row, f4.row, saveB, msg);
+    const card = h('div', { class: 'reg-card2' }, avatar, file, f1.inp, f2.inp, f3.inp, f4.inp);
     const wrap = h('div', { class: 'reg-form' }, card);
+    wrap.append(h('p', { class: 'reg-note' }, 'Toca el recuadro de la foto para subir una imagen.'), saveB, msg);
     wrap.append(h('div', { class: 'reg-row' },
       h('button', { class: 'btn', type: 'button', onclick: () => { editId = null; paintBody(); } }, '+ Estudiante nuevo'),
       h('p', { class: 'reg-note' }, 'Los datos se guardan solo en este navegador.')));
