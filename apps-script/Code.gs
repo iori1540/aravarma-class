@@ -43,6 +43,6 @@ function doGet(e) {
   const s = hoja_();
   if (s.getLastRow() < 2) return salida({ rows: [] });
   const datos = s.getRange(2, 1, s.getLastRow() - 1, COLUMNAS.length).getValues();
-  const rows = datos.map(f => { const o = {}; COLUMNAS.forEach((c, k) => { o[c] = f[k]; }); delete o.detalle; return o; });
+  const rows = datos.map(f => { const o = {}; COLUMNAS.forEach((c, k) => { o[c] = f[k]; }); return o; });
   return salida({ rows: rows });
 }

@@ -214,6 +214,9 @@
   function viewProgress() {
     const s = cur();
     if (!s) return h('p', { class: 'reg-empty' }, 'Primero registra al estudiante en «Mi registro».');
+    return progressOf(s);
+  }
+  function progressOf(s) {
     const wrap = h('div', { class: 'reg-prog' }, h('p', { class: 'reg-who' }, h('b', null, fullName(s)), s.grado ? ` · ${s.grado}` : ''));
     LESSONS.forEach(([id, label]) => {
       const r = summary(s, id);
@@ -306,19 +309,25 @@
         msg.textContent = rows.length ? `${rows.length} estudiante${rows.length === 1 ? '' : 's'} registrado${rows.length === 1 ? '' : 's'}.` : 'Aún no hay estudiantes en la hoja.';
         if (!rows.length) return;
         const tb = h('tbody');
+        const showTable = () => { out.replaceChildren(table, h('div', { class: 'reg-row' }, h('button', { class: 'btn', type: 'button', onclick: () => remoteCsv(rows) }, 'Descargar todos (Excel)'))); };
+        const showOne = r => {
+          let best = {}; try { best = JSON.parse(r.detalle || '{}') || {}; } catch (e) { /* sin detalle */ }
+          const st = { nombre: r.nombre, apellidos: r.apellidos, grado: r.puesto, best };
+          out.replaceChildren(h('div', { class: 'reg-row' }, h('button', { class: 'btn sm', type: 'button', onclick: showTable }, '← Volver a la lista')), progressOf(st));
+        };
         rows.forEach(r => tb.append(h('tr', null,
-          h('td', { class: 'st-n' }, h('span', { class: 'ph', html: IC.user }), h('span', null, h('b', null, [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'Sin nombre'), h('small', null, r.puesto || r.correo || ''))),
+          h('td', { class: 'st-n' }, h('span', { class: 'ph', html: IC.user }), h('span', null, h('button', { class: 'st-link', type: 'button', title: 'Ver avances', onclick: () => showOne(r) }, [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'Sin nombre'), h('small', null, r.puesto || r.correo || ''))),
           ...[r.b1, r.b2, r.b3, r.ex, r.ru].map(p => h('td', { class: 'st-p' }, h('span', { class: 'rp-m' }, h('i', { style: `width:${+p || 0}%` })), h('b', null, (+p || 0) + '%'))),
           h('td', { class: 'st-c' }, h('span', { html: IC.star }), String(r.tarjetas || 0)),
           h('td', { class: 'st-d' }, r.actualizado ? new Date(r.actualizado).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }) : ''))));
-        out.append(h('div', { class: 'scroll-x' }, h('table', { class: 'rl-t' },
-          h('thead', null, h('tr', null, ...['Estudiante', 'Básico 1', 'Básico 2', 'Básico 3', 'Extras', 'Ruleta', 'Tarjetas', 'Actualizado'].map(t => h('th', null, t)))), tb)),
-          h('div', { class: 'reg-row' }, h('button', { class: 'btn', type: 'button', onclick: () => remoteCsv(rows) }, 'Descargar todos (Excel)')));
+        const table = h('div', { class: 'scroll-x' }, h('table', { class: 'rl-t' },
+          h('thead', null, h('tr', null, ...['Estudiante', 'Básico 1', 'Básico 2', 'Básico 3', 'Extras', 'Ruleta', 'Tarjetas', 'Actualizado'].map(t => h('th', null, t)))), tb));
+        showTable();
       } catch (e) { msg.textContent = 'No se pudo conectar con la hoja. Revisa tu conexión.'; }
     }
     pin.addEventListener('keydown', e => { if (e.key === 'Enter') load(); });
     return h('section', { class: 'tb' }, h('h3', null, 'Vista de la profesora'),
-      h('p', { class: 'reg-note' }, 'Aquí aparecen todos los estudiantes que se registraron, desde cualquier computadora.'),
+      h('p', { class: 'reg-note' }, 'Aquí aparecen todos los estudiantes que se registraron, desde cualquier computadora. Toca un nombre para ver sus avances.'),
       h('div', { class: 'reg-row' }, pin, h('button', { class: 'btn', type: 'button', onclick: load }, 'Ver a todos los estudiantes')), msg, out);
   }
   function viewList() {
