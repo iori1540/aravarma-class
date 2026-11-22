@@ -108,7 +108,7 @@ function initExtras() {
   function updateDots() {
     [...dotsEl.children].forEach((d, k) => { d.className = 'ex-dot' + (k === i ? ' cur' : '') + (res[k] === true ? ' ok' : res[k] === false ? ' no' : sel[k] >= 0 ? ' sel' : ''); });
   }
-  function updateBar() { barEl.style.width = Math.round(correct() / N * 100) + '%'; barEl.parentElement.setAttribute('aria-valuenow', String(correct())); }
+  function updateBar() { if (window.Registro) Registro.score('extras', correct(), N); barEl.style.width = Math.round(correct() / N * 100) + '%'; barEl.parentElement.setAttribute('aria-valuenow', String(correct())); }
   function updateButtons() {
     prevB.disabled = i === 0; nextB.disabled = i === N - 1;
     valB.disabled = res[i] === true;

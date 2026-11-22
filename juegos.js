@@ -182,6 +182,7 @@ function createGame(mount, cfg) {
       const r = grade(typed.join(''), [item.word]);
       if (r === 'no') { wrong('Casi. Borra y corrige las letras.'); return; }
       busy = true; typed = [...word]; draw();
+      if (window.Registro) Registro.earn(item.word, 'write');
       speak(item.word);
       win(r === 'accent' ? `¡Bien! Se escribe «${item.word}», con tilde.` : '¡Muy bien!');
     }

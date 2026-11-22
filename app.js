@@ -200,6 +200,7 @@ function markDone(id, done) {
 function setScore(id, got) {
   const before = score[id] || 0, total = (PG.find(p => p[0] === id) || [])[2];
   score[id] = got;
+  if (window.Registro) Registro.score(id, got, total);
   renderProgress();
   markDone(id, total && got === total);
   if (got > before && total) {
@@ -344,6 +345,7 @@ function createBoard(root, opts = {}) {
         const texts = [...ev.results[0]].map(a => a.transcript);
         const okWord = matchSpelling(texts, word).full;
         const okLast = !okWord && all.length > 1 && matchSpelling(texts, last).full;
+        if (okWord && all.length > 1 && window.Registro) Registro.earn(word, 'say');
         if (okWord || okLast) {
           const said = okWord ? (all.length > 1 ? `«${word}»` : `la letra ${word.toUpperCase()}`) : `la letra ${last.toUpperCase()}`;
           msg.className = 'feedback ok mic-msg'; msg.textContent = `✓ Válido. Pronunciaste ${said} correctamente.`;
@@ -511,7 +513,7 @@ function initSpell() {
       const texts = [...ev.results[0]].map(a => a.transcript);
       const r = matchSpelling(texts, word);
       $$('.lt', slate).forEach((el, i) => { el.classList.remove('hit', 'miss'); if (r.got[i]) el.classList.add(r.hits[i] ? 'hit' : 'miss'); });
-      if (r.full) { micMsg.className = 'feedback ok'; micMsg.textContent = `¡Muy bien! Deletreaste «${word}».`; }
+      if (r.full) { micMsg.className = 'feedback ok'; micMsg.textContent = `¡Muy bien! Deletreaste «${word}».`; if (window.Registro) Registro.earn(word, 'say'); }
       else if (fold(texts[0]).replace(/\s/g, '') === fold(word).replace(/\s/g, '')) { micMsg.className = 'feedback hint'; micMsg.textContent = 'Dijiste la palabra completa. Ahora di cada letra: ' + [...word].filter(c => c !== ' ').map(letterName).join(', ') + '.'; }
       else { micMsg.className = 'feedback no'; micMsg.textContent = `Escuché: ${texts[0]}. Inténtalo otra vez, letra por letra.`; }
     };
