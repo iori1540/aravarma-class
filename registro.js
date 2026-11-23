@@ -296,6 +296,15 @@
   function teacherBox() {
     const out = h('div', { class: 'tb-out' });
     const msg = h('p', { class: 'reg-note', role: 'status', 'aria-live': 'polite' });
+    async function removeRemote(r) {
+      const nom = [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'este estudiante';
+      const clave = window.prompt('Para eliminar a ' + nom + ' escribe la clave de la profesora:');
+      if (!clave) return;
+      if (!window.confirm('¿Eliminar a ' + nom + ' de la lista? Esta acción no se puede deshacer.')) return;
+      msg.textContent = 'Eliminando…';
+      try { await fetch(CFG.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ accion: 'eliminar', id: r.id, pin: clave.trim() }) }); } catch (e) { /* sin conexión */ }
+      setTimeout(async () => { await load(); msg.textContent += ' Si el estudiante sigue en la lista, la clave no era correcta.'; }, 1500);
+    }
     async function load() {
       msg.textContent = 'Cargando…'; out.replaceChildren();
       try {
@@ -316,9 +325,10 @@
           h('td', { class: 'st-n' }, h('span', { class: 'ph', html: IC.user }), h('span', null, h('button', { class: 'st-link', type: 'button', title: 'Ver avances', onclick: () => showOne(r) }, [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'Sin nombre'), h('small', null, r.puesto || ''), r.correo ? h('small', null, r.correo) : null)),
           ...[r.b1, r.b2, r.b3, r.ex, r.ru].map(p => h('td', { class: 'st-p' }, h('span', { class: 'rp-m' }, h('i', { style: `width:${+p || 0}%` })), h('b', null, (+p || 0) + '%'))),
           h('td', { class: 'st-c' }, h('span', { html: IC.star }), String(r.tarjetas || 0)),
-          h('td', { class: 'st-d' }, r.actualizado ? new Date(r.actualizado).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }) : ''))));
+          h('td', { class: 'st-d' }, r.actualizado ? new Date(r.actualizado).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }) : ''),
+          h('td', null, h('button', { class: 'btn sm pink', type: 'button', 'aria-label': 'Eliminar a ' + [r.nombre, r.apellidos].filter(Boolean).join(' '), onclick: () => removeRemote(r) }, 'Eliminar')))));
         const table = h('div', { class: 'scroll-x' }, h('table', { class: 'rl-t' },
-          h('thead', null, h('tr', null, ...['Estudiante', 'Básico 1', 'Básico 2', 'Básico 3', 'Extras', 'Ruleta', 'Tarjetas', 'Actualizado'].map(t => h('th', null, t)))), tb));
+          h('thead', null, h('tr', null, ...['Estudiante', 'Básico 1', 'Básico 2', 'Básico 3', 'Extras', 'Ruleta', 'Tarjetas', 'Actualizado', ''].map(t => h('th', null, t)))), tb));
         showTable();
       } catch (e) { msg.textContent = 'No se pudo conectar con la hoja. Revisa tu conexión.'; }
     }

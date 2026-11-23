@@ -1,6 +1,7 @@
 /* Aravarma class · Registro de estudiantes en Google Sheets
    Pega este código en: Hoja de cálculo > Extensiones > Apps Script. */
 
+const PIN = 'aravarma2026';   // clave de la profesora: SOLO sirve para eliminar estudiantes
 const HOJA = 'Estudiantes';
 const COLUMNAS = ['id', 'nombre', 'apellidos', 'puesto', 'correo', 'b1', 'b2', 'b3', 'ex', 'ru', 'tarjetas', 'palabras', 'actualizado', 'detalle'];
 
@@ -21,6 +22,16 @@ function doPost(e) {
   lock.waitLock(15000);
   try {
     const d = JSON.parse(e.postData.contents);
+    if (d.accion === 'eliminar') {
+      if (d.pin !== PIN) return ContentService.createTextOutput('pin');
+      const sh = hoja_();
+      if (sh.getLastRow() > 1) {
+        const ids = sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues().map(r => r[0]);
+        const k = ids.indexOf(d.id);
+        if (k >= 0) sh.deleteRow(k + 2);
+      }
+      return ContentService.createTextOutput('eliminado');
+    }
     if (!d.id || !d.nombre) return ContentService.createTextOutput('ignorado');
     d.actualizado = new Date().toISOString();
     const s = hoja_();
