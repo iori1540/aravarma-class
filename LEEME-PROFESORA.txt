@@ -7,8 +7,7 @@ TODOS, los avances se envían a una hoja de cálculo de Google (gratis). Se hace
    (nombre sugerido: "Aravarma - Estudiantes").
 2) Menú Extensiones > Apps Script. Borra lo que haya y pega TODO el contenido del archivo
    apps-script/Code.gs.
-3) En la primera línea del código cambia  const PIN = '1234';  por una clave que solo
-   la profesora conozca. Guarda (icono del disquete).
+3) (Ya no se usa clave: la lista de estudiantes es pública dentro de la página, con nombres y correos.)
 4) Botón azul "Implementar" > "Nueva implementación" > engranaje > "Aplicación web".
       - Ejecutar como:      Yo
       - Quién tiene acceso: Cualquier persona

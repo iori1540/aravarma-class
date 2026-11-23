@@ -214,7 +214,9 @@
   function viewProgress() {
     const s = cur();
     if (!s) return h('p', { class: 'reg-empty' }, 'Primero registra al estudiante en «Mi registro».');
-    return progressOf(s);
+    const p = progressOf(s);
+    if (!s.nombre) p.prepend(h('p', { class: 'reg-warn' }, 'Todavía eres «Invitado». Escribe tu nombre en «Mi registro» y pulsa «Guardar registro» para aparecer en la lista de estudiantes.'));
+    return p;
   }
   function progressOf(s) {
     const wrap = h('div', { class: 'reg-prog' }, h('p', { class: 'reg-who' }, h('b', null, fullName(s)), s.grado ? ` · ${s.grado}` : ''));
@@ -284,7 +286,6 @@
   }
 
   /* --- Vista de la profesora: todos los estudiantes (desde la hoja) --- */
-  let pinMem = '';
   function remoteCsv(rows) {
     const head = ['Nombre', 'Apellidos', 'Puesto', 'Correo', 'Básico 1 %', 'Básico 2 %', 'Básico 3 %', 'Actividades extras %', 'Ruleta %', 'Tarjetas', 'Palabras', 'Actualizado'];
     const text = [head, ...rows.map(r => [r.nombre, r.apellidos, r.puesto, r.correo, r.b1, r.b2, r.b3, r.ex, r.ru, r.tarjetas, r.palabras, r.actualizado])]
@@ -294,17 +295,13 @@
   }
   function teacherBox() {
     const out = h('div', { class: 'tb-out' });
-    const pin = h('input', { class: 'tb-pin', type: 'password', placeholder: 'Clave de la profesora', autocomplete: 'off', 'aria-label': 'Clave de la profesora' });
-    pin.value = pinMem;
     const msg = h('p', { class: 'reg-note', role: 'status', 'aria-live': 'polite' });
     async function load() {
-      pinMem = pin.value.trim();
-      if (!pinMem) { msg.textContent = 'Escribe la clave de la profesora.'; return; }
       msg.textContent = 'Cargando…'; out.replaceChildren();
       try {
-        const r = await fetch(CFG.url + (CFG.url.includes('?') ? '&' : '?') + 'action=list&pin=' + encodeURIComponent(pinMem));
+        const r = await fetch(CFG.url + (CFG.url.includes('?') ? '&' : '?') + 'action=list');
         const d = await r.json();
-        if (d.error) { msg.textContent = d.error === 'pin' ? 'La clave no es correcta.' : 'No se pudo leer la hoja.'; return; }
+        if (d.error) { msg.textContent = 'No se pudo leer la hoja.'; return; }
         const rows = d.rows || [];
         msg.textContent = rows.length ? `${rows.length} estudiante${rows.length === 1 ? '' : 's'} registrado${rows.length === 1 ? '' : 's'}.` : 'Aún no hay estudiantes en la hoja.';
         if (!rows.length) return;
@@ -316,7 +313,7 @@
           out.replaceChildren(h('div', { class: 'reg-row' }, h('button', { class: 'btn sm', type: 'button', onclick: showTable }, '← Volver a la lista')), progressOf(st));
         };
         rows.forEach(r => tb.append(h('tr', null,
-          h('td', { class: 'st-n' }, h('span', { class: 'ph', html: IC.user }), h('span', null, h('button', { class: 'st-link', type: 'button', title: 'Ver avances', onclick: () => showOne(r) }, [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'Sin nombre'), h('small', null, r.puesto || r.correo || ''))),
+          h('td', { class: 'st-n' }, h('span', { class: 'ph', html: IC.user }), h('span', null, h('button', { class: 'st-link', type: 'button', title: 'Ver avances', onclick: () => showOne(r) }, [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'Sin nombre'), h('small', null, r.puesto || ''), r.correo ? h('small', null, r.correo) : null)),
           ...[r.b1, r.b2, r.b3, r.ex, r.ru].map(p => h('td', { class: 'st-p' }, h('span', { class: 'rp-m' }, h('i', { style: `width:${+p || 0}%` })), h('b', null, (+p || 0) + '%'))),
           h('td', { class: 'st-c' }, h('span', { html: IC.star }), String(r.tarjetas || 0)),
           h('td', { class: 'st-d' }, r.actualizado ? new Date(r.actualizado).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }) : ''))));
@@ -325,15 +322,15 @@
         showTable();
       } catch (e) { msg.textContent = 'No se pudo conectar con la hoja. Revisa tu conexión.'; }
     }
-    pin.addEventListener('keydown', e => { if (e.key === 'Enter') load(); });
-    return h('section', { class: 'tb' }, h('h3', null, 'Vista de la profesora'),
-      h('p', { class: 'reg-note' }, 'Aquí aparecen todos los estudiantes que se registraron, desde cualquier computadora. Toca un nombre para ver sus avances.'),
-      h('div', { class: 'reg-row' }, pin, h('button', { class: 'btn', type: 'button', onclick: load }, 'Ver a todos los estudiantes')), msg, out);
+    load();
+    return h('section', { class: 'tb' }, h('h3', null, 'Todos los estudiantes'),
+      h('p', { class: 'reg-note' }, 'Aquí aparecen los nombres, los correos y los logros de todos los estudiantes registrados. Toca un nombre para ver sus avances.'),
+      h('div', { class: 'reg-row' }, h('button', { class: 'btn sm', type: 'button', onclick: load }, 'Actualizar lista')), msg, out);
   }
   function viewList() {
     const wrap = h('div', { class: 'reg-all' });
-    wrap.append(CFG.url ? teacherBox() : h('p', { class: 'reg-warn' }, 'Para que la profesora vea a todos los estudiantes desde su computadora hay que conectar la hoja de cálculo (ver LEEME-PROFESORA.txt). Mientras tanto, esta lista muestra solo a los estudiantes de este navegador.'));
-    wrap.append(h('h3', { class: 'tb-h' }, 'En este navegador'), localList());
+    wrap.append(CFG.url ? teacherBox() : h('p', { class: 'reg-warn' }, 'La lista de todos los estudiantes aún no está conectada a la hoja de cálculo (ver LEEME-PROFESORA.txt). Mientras tanto, esta lista muestra solo a los estudiantes de este navegador.'));
+    if (!CFG.url) wrap.append(h('h3', { class: 'tb-h' }, 'En este navegador'), localList());
     return wrap;
   }
 
