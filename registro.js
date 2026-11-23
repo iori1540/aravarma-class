@@ -296,22 +296,36 @@
   function teacherBox() {
     const out = h('div', { class: 'tb-out' });
     const msg = h('p', { class: 'reg-note', role: 'status', 'aria-live': 'polite' });
-    async function removeRemote(r) {
+    const ask = h('div', { class: 'ask-slot' });
+    function removeRemote(r) {
       const nom = [r.nombre, r.apellidos].filter(Boolean).join(' ') || 'este estudiante';
-      const clave = window.prompt('Para eliminar a ' + nom + ' escribe la clave de la profesora:');
-      if (!clave) return;
-      if (!window.confirm('¿Eliminar a ' + nom + ' de la lista? Esta acción no se puede deshacer.')) return;
-      msg.textContent = 'Eliminando…';
-      try { await fetch(CFG.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ accion: 'eliminar', id: r.id, pin: clave.trim() }) }); } catch (e) { /* sin conexión */ }
-      setTimeout(async () => { await load(); msg.textContent += ' Si el estudiante sigue en la lista, la clave no era correcta.'; }, 1500);
+      const clave = h('input', { class: 'tb-pin', type: 'password', placeholder: 'Clave de la profesora', autocomplete: 'off', 'aria-label': 'Clave de la profesora' });
+      const err = h('p', { class: 'ask-err', role: 'status' });
+      const close = () => ask.replaceChildren();
+      const go = async () => {
+        const pin = clave.value.trim();
+        if (!pin) { err.textContent = 'Escribe la clave de la profesora.'; clave.focus(); return; }
+        close(); msg.textContent = 'Eliminando…';
+        try { await fetch(CFG.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ accion: 'eliminar', id: r.id, pin }) }); } catch (e) { /* sin conexión */ }
+        setTimeout(async () => { await load(); if ([...document.querySelectorAll('.st-link')].length && rowsHas(r.id)) msg.textContent += ' Si ' + nom + ' sigue en la lista, la clave no era correcta.'; }, 1500);
+      };
+      clave.addEventListener('keydown', e => { if (e.key === 'Enter') go(); if (e.key === 'Escape') close(); });
+      ask.replaceChildren(h('div', { class: 'ask', role: 'alertdialog', 'aria-label': 'Eliminar estudiante' },
+        h('h4', null, '¿Eliminar a ' + nom + '?'),
+        h('p', null, 'Se quitará de la lista de todos los estudiantes. Esta acción no se puede deshacer. Escribe la clave de la profesora para confirmar.'),
+        clave, err,
+        h('div', { class: 'reg-row' }, h('button', { class: 'btn pink', type: 'button', onclick: go }, 'Eliminar'), h('button', { class: 'btn', type: 'button', onclick: close }, 'Cancelar'))));
+      ask.scrollIntoView({ block: 'nearest' }); clave.focus();
     }
+    let lastRows = [];
+    const rowsHas = id => lastRows.some(x => x.id === id);
     async function load() {
       msg.textContent = 'Cargando…'; out.replaceChildren();
       try {
         const r = await fetch(CFG.url + (CFG.url.includes('?') ? '&' : '?') + 'action=list');
         const d = await r.json();
         if (d.error) { msg.textContent = 'No se pudo leer la hoja.'; return; }
-        const rows = d.rows || [];
+        const rows = d.rows || []; lastRows = rows;
         msg.textContent = rows.length ? `${rows.length} estudiante${rows.length === 1 ? '' : 's'} registrado${rows.length === 1 ? '' : 's'}.` : 'Aún no hay estudiantes en la hoja.';
         if (!rows.length) return;
         const tb = h('tbody');
@@ -335,7 +349,7 @@
     load();
     return h('section', { class: 'tb' }, h('h3', null, 'Todos los estudiantes'),
       h('p', { class: 'reg-note' }, 'Aquí aparecen los nombres, los correos y los logros de todos los estudiantes registrados. Toca un nombre para ver sus avances.'),
-      h('div', { class: 'reg-row' }, h('button', { class: 'btn sm', type: 'button', onclick: load }, 'Actualizar lista')), msg, out);
+      h('div', { class: 'reg-row' }, h('button', { class: 'btn sm', type: 'button', onclick: load }, 'Actualizar lista')), msg, ask, out);
   }
   function viewList() {
     const wrap = h('div', { class: 'reg-all' });
