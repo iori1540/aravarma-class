@@ -1229,7 +1229,7 @@ function initGreetings() {
 /* ============================================================
    Pestañas, botones del panel y opciones
    ============================================================ */
-const TABS = ['bas-01', 'bas-02', 'bas-03', 'pais', 'extras'];
+const TABS = ['bas-01', 'bas-02', 'bas-03', 'extras'];
 function showTab(id) {
   if (!TABS.includes(id)) id = 'bas-01';
   state.tab = id;
