@@ -5,7 +5,7 @@
 (() => {
   'use strict';
   const KEY = 'aravarma.registro.v1';
-  const LESSONS = [['lesson-bas-01', 'Básico 1'], ['lesson-bas-02', 'Básico 2'], ['lesson-bas-03', 'Básico 3'], ['lesson-extras', 'Actividades extras'], ['ruleta-end', 'Ruleta final']];
+  const LESSONS = [['lesson-bas-01', 'Básico 1'], ['lesson-bas-02', 'Básico 2'], ['lesson-bas-03', 'Básico 3'], ['lesson-pais', 'Países y gentilicios'], ['lesson-extras', 'Actividades extras'], ['ruleta-end', 'Ruleta final']];
   const IC = {
     user: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4.2"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>',
     school: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 1 9l11 6 9-4.9V17h2V9z"/><path d="M5 13.2V17c0 1.7 3.1 3 7 3s7-1.3 7-3v-3.8l-7 3.8z"/></svg>',
@@ -255,7 +255,7 @@
 
   /* --- Estudiantes (lista para la profesora) --- */
   function csv() {
-    const rows = [['Nombre', 'Apellidos', 'Grado o grupo', 'Correo', 'Básico 1 %', 'Básico 2 %', 'Básico 3 %', 'Actividades extras %', 'Ruleta %', 'Tarjetas', 'Registro']];
+    const rows = [['Nombre', 'Apellidos', 'Grado o grupo', 'Correo', 'Básico 1 %', 'Básico 2 %', 'Básico 3 %', 'Países y gentilicios %', 'Actividades extras %', 'Ruleta %', 'Tarjetas', 'Registro']];
     db.students.forEach(s => rows.push([s.nombre, s.apellidos, s.grado, s.correo, ...LESSONS.map(([id]) => summary(s, id).pct), totalCards(s), new Date(s.creado).toLocaleDateString('es-PE')]));
     const text = rows.map(r => r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';')).join('\r\n');
     const a = h('a', { href: URL.createObjectURL(new Blob(['﻿' + text], { type: 'text/csv;charset=utf-8' })), download: 'estudiantes-aravarma.csv' });

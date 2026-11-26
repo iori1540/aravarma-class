@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20261126b">
+<link rel="stylesheet" href="styles.css?v=20261126c">
 </head>
 <body>
 
@@ -60,6 +60,7 @@
     <button class="tab" role="tab" id="tab-bas-01" data-tab="bas-01" aria-controls="lesson-bas-01" type="button"><b>Básico 1</b> Saludos y presentaciones</button>
     <button class="tab" role="tab" id="tab-bas-02" data-tab="bas-02" aria-controls="lesson-bas-02" type="button"><b>Básico 2</b> El alfabeto y la pronunciación</button>
     <button class="tab" role="tab" id="tab-bas-03" data-tab="bas-03" aria-controls="lesson-bas-03" type="button"><b>Básico 3</b> Pronombres, verbos ser y tener, números</button>
+    <button class="tab" role="tab" id="tab-pais" data-tab="pais" aria-controls="lesson-pais" type="button"><b>Básico 1</b> Países y gentilicios</button>
     <button class="tab" role="tab" id="tab-extras" data-tab="extras" aria-controls="lesson-extras" type="button"><b>ACTIVIDADES EXTRAS</b></button>
   </div>
 
@@ -757,6 +758,98 @@
     </div>
   </article>
 
+  <!-- ---------- PAÍSES Y GENTILICIOS ---------- -->
+  <article class="lesson" id="lesson-pais" role="tabpanel" aria-labelledby="tab-pais" hidden>
+    <h3 class="banner big">Países y gentilicios del mundo</h3>
+
+    <div class="card lead">
+      <h3>Objetivo general</h3>
+      <p>Identificar países e idiomas globales empleando correctamente sus gentilicios en la comunicación oral y escrita.</p>
+      <div class="pa-four">
+        <div class="pa-mini"><b>📍 Ubicación geográfica</b><p>Reconocer naciones principales por continente.</p></div>
+        <div class="pa-mini"><b>✏️ Ortografía precisa</b><p>Aplicar sufijos y minúsculas correctamente.</p></div>
+        <div class="pa-mini"><b>⭐ Uso cotidiano</b><p>Redactar oraciones reales sobre nacionalidades.</p></div>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <h4 class="pill-title">¿Qué es un gentilicio?</h4>
+        <p><b>Adjetivo que indica origen geográfico.</b></p>
+        <ul class="pa-pts">
+          <li><b>Minúscula inicial:</b> se escriben siempre en minúscula.</li>
+          <li><b>Concordancia:</b> varían en género y número.</li>
+          <li><b>Derivación:</b> añaden sufijos al topónimo (nombre propio de un lugar: país, ciudad).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 class="pill-title">Terminaciones más frecuentes</h4>
+        <table class="t pa-term">
+          <tbody>
+            <tr><th>-ano / -ana</th><td>Perú → <b>peruano</b></td><td><img class="pa-flag" src="images/paises/peru.webp" alt="Bandera de Perú" width="160" loading="lazy"></td></tr>
+            <tr><th>-eño / -eña</th><td>Brasil → <b>brasileño</b></td><td><img class="pa-flag" src="images/paises/brasil.webp" alt="Bandera de Brasil" width="160" loading="lazy"></td></tr>
+            <tr><th>-és / -esa</th><td>Francia → <b>francés</b></td><td><img class="pa-flag" src="images/paises/francia.webp" alt="Bandera de Francia" width="160" loading="lazy"></td></tr>
+            <tr><th>-ense</th><td>Canadá → <b>canadiense</b></td><td><img class="pa-flag" src="images/paises/canada.webp" alt="Bandera de Canadá" width="160" loading="lazy"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4 class="pill-title">Ejemplos por continente</h4>
+      <div class="scroll-x">
+      <table class="t pa-cont">
+        <thead><tr><th>América</th><th>Europa</th><th>Asia</th><th>África</th><th>Oceanía</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><img class="pa-flag" src="images/paises/estados-unidos.webp" alt="Bandera de Estados Unidos" width="160" loading="lazy"><span>americano<br>americana</span></td>
+            <td><img class="pa-flag" src="images/paises/francia.webp" alt="Bandera de Francia" width="160" loading="lazy"><span>francés<br>francesa</span></td>
+            <td><img class="pa-flag" src="images/paises/japon.webp" alt="Bandera de Japón" width="160" loading="lazy"><span>japonés<br>japonesa</span></td>
+            <td><img class="pa-flag" src="images/paises/marruecos.webp" alt="Bandera de Marruecos" width="160" loading="lazy"><span>marroquí<br>marroquí</span></td>
+            <td><img class="pa-flag" src="images/paises/australia.webp" alt="Bandera de Australia" width="160" loading="lazy"><span>australiano<br>australiana</span></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <h3 class="act-h">Actividades prácticas en el aula</h3>
+
+    <div class="card act">
+      <div class="act-head"><h4>1. Mapa interactivo</h4><p>Recorre el mundo de España a Argentina. Toca la etapa que brilla, mira la bandera y elige el gentilicio correcto.</p></div>
+      <div id="act-pais-mapa"></div>
+    </div>
+
+    <div class="card act">
+      <div class="act-head"><h4>2. Memorama cultural</h4><p>Une cada tarjeta con el nombre del país (y su bandera) con la tarjeta de su gentilicio. Cada 2 pares ganas un globo con una medalla: ¡desata el lazo!</p></div>
+      <div id="act-pais-memo"></div>
+    </div>
+
+    <div class="card act">
+      <div class="act-head"><h4>3. Pasaporte viajero</h4><p>Completa cada diálogo de presentación con el país y el gentilicio de la persona para sellar su pasaporte.</p></div>
+      <div id="act-pais-pasa"></div>
+    </div>
+
+    <div class="card act">
+      <div class="act-head"><h4>4. Trivial grupal</h4><p>Competencia rápida por equipos: países, capitales, banderas y gentilicios antes de que se agote el reloj.</p></div>
+      <div id="act-pais-trivia"></div>
+    </div>
+
+    <h3 class="act-h">⭐ Actividad destacada: Feria de Naciones</h3>
+    <div class="card hr-rosa">
+      <h4 class="pill-title">Juego de roles en parejas</h4>
+      <ul class="pa-pts">
+        <li><b>Asignación:</b> cada alumno representa un país.</li>
+        <li><b>Entrevista:</b> se preguntan origen, idioma y capital.</li>
+        <li><b>Registro:</b> completan una ficha con 8 gentilicios.</li>
+      </ul>
+    </div>
+    <div class="card act">
+      <div class="act-head"><h4>Ficha de la Feria de Naciones</h4><p>Escribe el gentilicio de cada país (masculino o femenino).</p></div>
+      <div id="act-pais-feria"></div>
+    </div>
+  </article>
+
   <!-- ---------- ACTIVIDADES EXTRAS ---------- -->
   <article class="lesson" id="lesson-extras" role="tabpanel" aria-labelledby="tab-extras" hidden>
     <div class="card lead">
@@ -800,12 +893,13 @@
   <p class="feedback" id="dq-feedback" role="status" aria-live="polite"></p>
 </dialog>
 
-<script src="juegos.js?v=20261126b"></script>
-<script src="extras.js?v=20261126b"></script>
-<script src="app.js?v=20261126b"></script>
-<script src="config.js?v=20261126b"></script>
-<script src="ordinales.js?v=20261126b"></script>
-<script src="hora.js?v=20261126b"></script>
-<script src="registro.js?v=20261126b"></script>
+<script src="juegos.js?v=20261126c"></script>
+<script src="extras.js?v=20261126c"></script>
+<script src="app.js?v=20261126c"></script>
+<script src="config.js?v=20261126c"></script>
+<script src="ordinales.js?v=20261126c"></script>
+<script src="hora.js?v=20261126c"></script>
+<script src="paises.js?v=20261126c"></script>
+<script src="registro.js?v=20261126c"></script>
 </body>
 </html>
