@@ -235,45 +235,146 @@
   }
 
   /* =====================================================================
-     3. PASAPORTE VIAJERO · diálogos de presentación
+     3. PASAPORTE VIAJERO · tres diálogos de viaje y actividades 1 a 5
      ===================================================================== */
-  const VIAJEROS = [['Andrea', 'f', 'peru'], ['Kenji', 'm', 'japon'], ['Pierre', 'm', 'francia'], ['Sofía', 'f', 'argentina'], ['Luca', 'm', 'italia']];
+  const DIA = [
+    { t: 'Diálogo 1 · En el aeropuerto', sit: 'Dos pasajeros se conocen mientras esperan su vuelo.', img: 'aeropuerto', alt: 'Un joven y una joven con maletas en la sala de un aeropuerto', a: 'María', b: 'Carlos', l: [
+      ['María', '¡Hola! Buenos días. ¿Cómo te llamas?'], ['Carlos', '¡Hola! Me llamo Carlos. ¿Y tú?'], ['María', 'Me llamo María. ¡Mucho gusto!'], ['Carlos', 'Encantado. ¿De dónde eres?'],
+      ['María', 'Soy de Perú. Soy peruana. ¿Y tú?'], ['Carlos', 'Soy de México. Soy mexicano.'], ['María', '¡Qué interesante! ¿Adónde viajas?'], ['Carlos', 'Viajo a España. ¿Y tú?'], ['María', 'Yo también viajo a España.']] },
+    { t: 'Diálogo 2 · Durante el viaje', sit: 'Dos pasajeros conversan en el avión.', img: 'avion', alt: 'Un joven y una joven sentados juntos en un avión', a: 'Sofía', b: 'Lucas', l: [
+      ['Sofía', 'Hola, ¿está libre este asiento?'], ['Lucas', 'Sí, claro. Puedes sentarte aquí.'], ['Sofía', 'Gracias. Me llamo Sofía. ¿Cómo te llamas?'], ['Lucas', 'Soy Lucas. Mucho gusto.'],
+      ['Sofía', 'Igualmente. ¿De dónde eres, Lucas?'], ['Lucas', 'Soy de Brasil. Soy brasileño. ¿Y tú?'], ['Sofía', 'Soy de Argentina. Soy argentina.'], ['Lucas', '¡Qué bien! ¿Es tu primera vez en Colombia?'],
+      ['Sofía', 'Sí, es mi primera vez. ¿Y tú?'], ['Lucas', 'No, ya conozco Colombia.']] },
+    { t: 'Diálogo 3 · En el hotel', sit: 'Dos viajeros se conocen en la recepción de un hotel.', img: 'hotel', alt: 'Una pareja con maletas habla con la recepcionista de un hotel', a: 'Recepcionista', b: 'Ana', l: [
+      ['Recepcionista', '¡Buenas tardes! Bienvenidos al hotel.'], ['Ana', 'Buenas tardes. Tenemos una reserva.'], ['Recepcionista', 'Perfecto. ¿De dónde son ustedes?'], ['Ana', 'Somos de Francia. Yo soy francesa y él es francés.'],
+      ['Recepcionista', '¡Muy bien! ¿Cómo se llaman?'], ['Ana', 'Me llamo Ana y él se llama Pierre.'], ['Pierre', 'Mucho gusto.'], ['Recepcionista', 'Encantada. ¿Cuántos días van a quedarse?'],
+      ['Ana', 'Tres días. Estamos de vacaciones.'], ['Recepcionista', '¡Excelente! Que disfruten su estancia.']] },
+  ];
+  const VOC = ['peru', 'mexico', 'espana', 'brasil', 'argentina', 'colombia', 'francia'];
+  const sayLine = t => { if (typeof speak === 'function') speak(t); };
+
+  function lineaEl(sp, tx, lado) {
+    return h('div', { class: 'pv-l' + (lado ? ' rt' : '') }, h('b', null, sp + ':'), h('span', null, tx), h('button', { class: 'pv-say', type: 'button', 'aria-label': 'Escuchar esta frase', onclick: () => sayLine(tx) }, '🔊'));
+  }
   function initPasaporte() {
-    const mount = $('#act-pais-pasa'); if (!mount) return;
-    const lista = VIAJEROS.map(([nombre, g, id], i) => {
-      const inP = h('input', { class: 'pa-in', type: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': `País de ${nombre}`, placeholder: 'país' });
-      const inG = h('input', { class: 'pa-in', type: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': `Gentilicio de ${nombre}`, placeholder: 'gentilicio' });
-      const sello = h('div', { class: 'pa-sello', hidden: true, 'aria-hidden': 'true' }, 'ADMITIDO');
-      const fb = h('p', { class: 'feedback', role: 'status', 'aria-live': 'polite' });
-      const art = g === 'f' ? 'la' : 'el';
-      const card = h('div', { class: 'pa-pass' },
-        h('div', { class: 'pa-id' }, h('small', null, 'PASAPORTE'), flagImg(id, `Bandera de ${nom(id)}`, 'pa-idflag'), h('b', null, nombre), h('span', null, g === 'f' ? 'viajera' : 'viajero'), sello),
-        h('div', { class: 'pa-dia' },
-          h('p', null, h('i', null, '— Hola, ¿cómo te llamas?')),
-          h('p', null, h('b', null, `— Me llamo ${nombre}.`)),
-          h('p', null, h('i', null, '— ¿De dónde eres?')),
-          h('p', null, h('b', null, '— Soy de '), inP, h('b', null, '.')),
-          h('p', null, h('i', null, `— Entonces, ${nombre}, ¿qué eres?`)),
-          h('p', null, h('b', null, '— Soy '), inG, h('b', null, '.'), h('small', { class: 'pa-tip' }, ` (${g === 'f' ? 'mujer' : 'hombre'})`)),
-          fb));
-      let ya = false;
-      function check() {
-        const a = grade(inP.value, [nom(id)]), b = grade(inG.value, g === 'f' ? [gf(id)] : [gm(id)]);
-        [[inP, a], [inG, b]].forEach(([el, r]) => { el.classList.remove('ok', 'no'); if (el.value.trim()) el.classList.add(r === 'no' ? 'no' : 'ok'); });
-        if (a !== 'no' && b !== 'no') {
-          sello.hidden = false; sello.classList.add('on'); sOk(); fb.className = 'feedback ok';
-          fb.textContent = a === 'accent' || b === 'accent' ? '¡Muy bien! Recuerda las tildes: ' + nom(id) + ', ' + (g === 'f' ? gf(id) : gm(id)) + '.' : '¡Pasaporte sellado!';
-          if (!ya) { ya = true; done++; setScore('paisPasa', done); }
-        } else { fb.className = 'feedback no'; fb.textContent = !inP.value.trim() && !inG.value.trim() ? 'Completa los dos espacios.' : 'Revisa las respuestas marcadas. Pista: el gentilicio se escribe con minúscula.'; sNo(); }
-      }
-      [inP, inG].forEach(x => x.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); check(); } }));
-      card.append(h('div', { class: 'row-actions' }, h('button', { class: 'btn go', type: 'button', onclick: check }, 'Comprobar')));
-      card.reset = () => { [inP, inG].forEach(x => { x.value = ''; x.classList.remove('ok', 'no'); }); sello.hidden = true; sello.classList.remove('on'); fb.textContent = ''; ya = false; };
-      return card;
+    const dm = $('#pv-dialogos'), vm = $('#pv-vocab'); if (!dm) return;
+    dm.replaceChildren(...DIA.map(d => {
+      const primero = d.l[0][0];
+      return h('div', { class: 'pv-dia' }, h('h5', null, d.t), h('p', { class: 'pv-sit' }, 'Situación: ' + d.sit),
+        h('div', { class: 'pv-grid' }, h('div', { class: 'pv-lines' }, ...d.l.map(([s, t]) => lineaEl(s, t, s !== primero))),
+          h('img', { src: `images/paises/dialogo-${d.img}.webp`, alt: d.alt, loading: 'lazy' })));
+    }));
+    /* vocabulario con tarjetas que se despliegan */
+    const info = h('div', { class: 'vc-info', role: 'region', 'aria-live': 'polite' }, h('span', { class: 'ord-hint' }, 'Toca una tarjeta para ver la información.'));
+    const cs = VOC.map(id => {
+      const c = h('button', { class: 'vc-c', type: 'button', 'aria-pressed': 'false' }, flagImg(id, '', ''), nom(id));
+      c.addEventListener('click', () => {
+        cs.forEach(x => x.setAttribute('aria-pressed', String(x === c)));
+        info.replaceChildren(h('div', { class: 'vc-pop' }, flagImg(id, `Bandera de ${nom(id)}`, ''), h('span', null, h('b', null, nom(id)), ' → masculino: ', h('b', null, gm(id)), ' · femenino: ', h('b', null, gf(id)))));
+        sayLine(`${nom(id)}. ${gm(id)}. ${gf(id)}`);
+      });
+      return c;
     });
-    let done = 0;
-    const reset = h('button', { class: 'btn pink', type: 'button', onclick: () => { lista.forEach(c => c.reset()); done = 0; setScore('paisPasa', 0); } }, 'Borrar todo');
-    mount.replaceChildren(h('div', { class: 'pa-passes' }, ...lista), h('div', { class: 'row-actions', style: 'margin-top:10px' }, reset));
+    vm.replaceChildren(h('div', { class: 'vc-cards' }, ...cs), info);
+    initId(); initRel(); initCom(); initPra(); initCrea();
+  }
+  const bar2 = (chk, clr) => h('div', { class: 'row-actions', style: 'margin-top:10px' }, h('button', { class: 'btn go', type: 'button', onclick: chk }, 'Validar'), h('button', { class: 'btn pink', type: 'button', onclick: clr }, 'Borrar'));
+
+  /* 1. Identifica: ¿de qué país es cada viajero? */
+  function initId() {
+    const mount = $('#act-pv-id'); if (!mount) return;
+    const V = [['María', 'peru'], ['Carlos', 'mexico'], ['Lucas', 'brasil'], ['Sofía', 'argentina'], ['Ana y Pierre', 'francia']];
+    const fb = h('p', { class: 'feedback', role: 'status', 'aria-live': 'polite' });
+    const rows = V.map(([n, id]) => {
+      const sel = h('select', { 'aria-label': `País de ${n}` }, h('option', { value: '' }, '— elige —'), ...mix(VOC).map(v => h('option', { value: v }, nom(v))));
+      const ic = h('span', { class: 'ic', 'aria-hidden': 'true' });
+      sel.addEventListener('change', () => { el.classList.remove('ok', 'no'); ic.textContent = ''; });
+      const el = h('div', { class: 'pv-row' }, h('b', null, n), n.includes(' y ') ? ' son de ' : ' es de ', sel, ic);
+      return { el, sel, ic, id };
+    });
+    const chk = () => {
+      let ok = 0, f = 0;
+      rows.forEach(r => { r.el.classList.remove('ok', 'no'); r.ic.textContent = ''; if (!r.sel.value) return; f++; const g = r.sel.value === r.id; r.el.classList.add(g ? 'ok' : 'no'); r.ic.textContent = g ? '✓' : '✕'; if (g) ok++; });
+      setScore('paisId', ok); fb.className = 'feedback ' + (ok === rows.length ? 'ok' : 'no');
+      fb.textContent = ok === rows.length ? '¡Muy bien! Identificaste los cinco países.' : !f ? 'Elige un país para cada viajero.' : 'Revisa las filas con ✕. Vuelve a leer los diálogos.';
+    };
+    const clr = () => { rows.forEach(r => { r.sel.value = ''; r.el.classList.remove('ok', 'no'); r.ic.textContent = ''; }); fb.textContent = ''; setScore('paisId', 0); };
+    mount.replaceChildren(...rows.map(r => r.el), fb, bar2(chk, clr));
+  }
+
+  /* 2. Relaciona: país ↔ gentilicio (arrastrar) */
+  function initRel() {
+    const mount = $('#act-pv-rel'); if (!mount || typeof makeDrop !== 'function') return;
+    makeDrop(mount, { id: 'paisRel', chips: mix(VOC.map(gm)), rows: VOC.map(id => ({ pre: nom(id) + ' →', post: '', ans: gm(id) })) });
+  }
+
+  /* 3. Completa: gentilicio que falta en cada diálogo */
+  function initCom() {
+    const mount = $('#act-pv-com'); if (!mount) return;
+    const T = [
+      ['Diálogo 1', [['María: Soy de Perú. Soy ', 'peruana'], ['Carlos: Soy de México. Soy ', 'mexicano']]],
+      ['Diálogo 2', [['Lucas: Soy de Brasil. Soy ', 'brasileño'], ['Sofía: Soy de Argentina. Soy ', 'argentina']]],
+      ['Diálogo 3', [['Ana: Somos de Francia. Yo soy ', 'francesa', ' y él es ', 'francés']]],
+    ];
+    const fb = h('p', { class: 'feedback', role: 'status', 'aria-live': 'polite' }), cells = [];
+    const body = T.map(([tt, ls]) => h('div', { class: 'pv-dia' }, h('h5', null, tt), ...ls.map(l => {
+      const row = h('div', { class: 'pv-row' });
+      for (let k = 0; k < l.length; k += 2) {
+        row.append(l[k]);
+        const inp = h('input', { class: 'pa-in', type: 'text', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Gentilicio que falta' });
+        inp.addEventListener('input', () => inp.classList.remove('ok', 'no'));
+        inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); chk(); } });
+        row.append(inp, '.'); cells.push({ inp, ans: l[k + 1] });
+      }
+      return row;
+    })));
+    const chk = () => {
+      let ok = 0, f = 0, ac = false;
+      cells.forEach(c => { c.inp.classList.remove('ok', 'no'); if (!c.inp.value.trim()) return; f++; const r = grade(c.inp.value, [c.ans]); c.inp.classList.add(r === 'no' ? 'no' : 'ok'); if (r !== 'no') ok++; if (r === 'accent') ac = true; });
+      setScore('paisCom', ok); fb.className = 'feedback ' + (ok === cells.length ? 'ok' : 'no');
+      fb.textContent = ok === cells.length ? (ac ? '¡Muy bien! Recuerda las tildes (francés, brasileño).' : '¡Excelente! Completaste todos los diálogos.') : !f ? 'Escribe el gentilicio que falta.' : 'Revisa las casillas marcadas. Pista: fíjate si habla un hombre o una mujer.';
+    };
+    const clr = () => { cells.forEach(c => { c.inp.value = ''; c.inp.classList.remove('ok', 'no'); }); fb.textContent = ''; setScore('paisCom', 0); };
+    mount.replaceChildren(...body, fb, bar2(chk, clr));
+  }
+
+  /* 4. Practica: representa un diálogo (se ocultan las frases de un personaje) */
+  function initPra() {
+    const mount = $('#act-pv-pra'); if (!mount) return;
+    const sd = h('select', { 'aria-label': 'Diálogo' }, ...DIA.map((d, i) => h('option', { value: i }, d.t)));
+    const sr = h('select', { 'aria-label': 'Personaje' });
+    const out = h('div', { class: 'pv-lines' });
+    const roles = () => { const d = DIA[+sd.value]; sr.replaceChildren(...[...new Set(d.l.map(x => x[0]))].map(n => h('option', { value: n }, n))); sr.value = d.a; pinta(); };
+    function pinta() {
+      const d = DIA[+sd.value], primero = d.l[0][0];
+      out.replaceChildren(...d.l.map(([s, t]) => {
+        const el = lineaEl(s, t, s !== primero);
+        if (s === sr.value) { el.classList.add('hid'); const sp = el.querySelector('span'); sp.title = 'Toca para ver la frase'; sp.addEventListener('click', () => el.classList.remove('hid')); }
+        return el;
+      }));
+    }
+    sd.addEventListener('change', roles); sr.addEventListener('change', pinta);
+    mount.replaceChildren(h('div', { class: 'pv-sel' }, h('label', null, 'Diálogo: '), sd, h('label', null, ' Yo soy: '), sr, h('button', { class: 'btn sm', type: 'button', onclick: pinta }, '🔄 Ocultar otra vez')), out,
+      h('p', { class: 'pa-note' }, 'Tu compañero lee las frases visibles y tú dices las frases ocultas en voz alta.'));
+    roles();
+  }
+
+  /* 5. Crea: tu propio diálogo */
+  function initCrea() {
+    const mount = $('#act-pv-crea'); if (!mount) return;
+    const ta = h('textarea', { class: 'pv-ta', 'aria-label': 'Tu diálogo', placeholder: 'Ejemplo:\n— ¡Hola! Me llamo ...\n— Mucho gusto. ¿De dónde eres?\n— Soy de ... Soy ...' });
+    const fb = h('p', { class: 'feedback', role: 'status', 'aria-live': 'polite' }), ul = h('ul', { class: 'pv-chk' });
+    const gents = Object.values(P).flatMap(x => [x[1], x[2]]).map(g => plainN(g));
+    function plainN(x) { return String(x).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+    const chk = () => {
+      const t = plainN(ta.value);
+      const C = [['Te presentas (me llamo / soy…)', /\b(me llamo|mi nombre es|soy [a-z]+)\b/.test(t)], ['Saludas (hola, buenos días…)', /\b(hola|buenos dias|buenas tardes|buenas noches)\b/.test(t)],
+        ['Preguntas el país de origen (¿de dónde eres?)', /de donde (eres|es usted|son)/.test(t)], ['Dices tu país y tu nacionalidad (soy de… soy…)', /soy de [a-zñ ]+/.test(t) && gents.some(g => new RegExp('\\b' + g + '\\b').test(t))]];
+      ul.replaceChildren(...C.map(([n, ok]) => h('li', { class: ok ? 'ok' : 'no' }, (ok ? '✓ ' : '✕ ') + n)));
+      const n = C.filter(c => c[1]).length; setScore('paisCrea', ta.value.trim() ? n : 0);
+      fb.className = 'feedback ' + (n === 4 ? 'ok' : 'no'); fb.textContent = !ta.value.trim() ? 'Escribe tu diálogo.' : n === 4 ? '¡Excelente! Tu diálogo tiene todo lo necesario.' : 'Casi. Agrega lo que falta y vuelve a validar.';
+    };
+    mount.replaceChildren(ta, ul, fb, bar2(chk, () => { ta.value = ''; ul.replaceChildren(); fb.textContent = ''; setScore('paisCrea', 0); }));
   }
 
   /* =====================================================================

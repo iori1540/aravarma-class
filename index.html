@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20261126e">
+<link rel="stylesheet" href="styles.css?v=20261126f">
 </head>
 <body>
 
@@ -251,15 +251,13 @@
       <h4 class="pill-title">Ejemplos por continente</h4>
       <div class="scroll-x">
       <table class="t pa-cont">
-        <thead><tr><th>América</th><th>Europa</th><th>Asia</th><th>África</th><th>Oceanía</th></tr></thead>
+        <thead><tr><th>Continente</th><th>País</th><th>Masculino</th><th>Femenino</th></tr></thead>
         <tbody>
-          <tr>
-            <td><img class="pa-flag" src="images/paises/estados-unidos.webp" alt="Bandera de Estados Unidos" width="160" loading="lazy"><span>americano<br>americana</span></td>
-            <td><img class="pa-flag" src="images/paises/francia.webp" alt="Bandera de Francia" width="160" loading="lazy"><span>francés<br>francesa</span></td>
-            <td><img class="pa-flag" src="images/paises/japon.webp" alt="Bandera de Japón" width="160" loading="lazy"><span>japonés<br>japonesa</span></td>
-            <td><img class="pa-flag" src="images/paises/marruecos.webp" alt="Bandera de Marruecos" width="160" loading="lazy"><span>marroquí<br>marroquí</span></td>
-            <td><img class="pa-flag" src="images/paises/australia.webp" alt="Bandera de Australia" width="160" loading="lazy"><span>australiano<br>australiana</span></td>
-          </tr>
+          <tr><td><b>América</b></td><td class="pa-pc"><img class="pa-flag sm" src="images/paises/argentina.webp" alt="Bandera de Argentina" width="160" loading="lazy"> Argentina</td><td>argentino</td><td>argentina</td></tr>
+          <tr><td><b>Europa</b></td><td class="pa-pc"><img class="pa-flag sm" src="images/paises/alemania.webp" alt="Bandera de Alemania" width="160" loading="lazy"> Alemania</td><td>alemán</td><td>alemana</td></tr>
+          <tr><td><b>Asia</b></td><td class="pa-pc"><img class="pa-flag sm" src="images/paises/japon.webp" alt="Bandera de Japón" width="160" loading="lazy"> Japón</td><td>japonés</td><td>japonesa</td></tr>
+          <tr><td><b>África</b></td><td class="pa-pc"><img class="pa-flag sm" src="images/paises/marruecos.webp" alt="Bandera de Marruecos" width="160" loading="lazy"> Marruecos</td><td>marroquí</td><td>marroquí</td></tr>
+          <tr><td><b>Oceanía</b></td><td class="pa-pc"><img class="pa-flag sm" src="images/paises/australia.webp" alt="Bandera de Australia" width="160" loading="lazy"> Australia</td><td>australiano</td><td>australiana</td></tr>
         </tbody>
       </table>
       </div>
@@ -277,9 +275,36 @@
       <div id="act-pais-memo"></div>
     </div>
 
+    <div class="card">
+      <h4 class="pill-title">3. Pasaporte viajero</h4>
+      <p><b>Objetivo comunicativo:</b> el estudiante será capaz de presentarse, preguntar y responder sobre su país de origen y nacionalidad en situaciones cotidianas relacionadas con los viajes.</p>
+      <div id="pv-dialogos"></div>
+    </div>
+    <div class="card">
+      <h4 class="pill-title">Vocabulario que se practica</h4>
+      <p class="ord-hint">👆 Toca un país para ver su gentilicio masculino y femenino.</p>
+      <div id="pv-vocab"></div>
+    </div>
+    <h3 class="act-h">Actividades de comprensión y expresión oral</h3>
     <div class="card act">
-      <div class="act-head"><h4>3. Pasaporte viajero</h4><p>Completa cada diálogo de presentación con el país y el gentilicio de la persona para sellar su pasaporte.</p></div>
-      <div id="act-pais-pasa"></div>
+      <div class="act-head"><h4>1. Identifica</h4><p>¿De qué países son los viajeros? Elige el país de cada uno.</p></div>
+      <div id="act-pv-id"></div>
+    </div>
+    <div class="card act">
+      <div class="act-head"><h4>2. Relaciona</h4><p>Une cada país con su gentilicio: arrastra cada palabra hasta el país que corresponde.</p></div>
+      <div id="act-pv-rel"></div>
+    </div>
+    <div class="card act">
+      <div class="act-head"><h4>3. Completa</h4><p>Escribe el gentilicio que falta en cada diálogo.</p></div>
+      <div id="act-pv-com"></div>
+    </div>
+    <div class="card act">
+      <div class="act-head"><h4>4. Practica</h4><p>Representa los diálogos con un compañero: elige un diálogo y un personaje. Sus frases se ocultan; tócalas para verlas cuando las necesites.</p></div>
+      <div id="act-pv-pra"></div>
+    </div>
+    <div class="card act">
+      <div class="act-head"><h4>5. Crea</h4><p>Redacta un diálogo nuevo. Preséntate, pregunta el país de origen y di tu nacionalidad.</p></div>
+      <div id="act-pv-crea"></div>
     </div>
 
     <div class="card act">
@@ -892,13 +917,13 @@
   <p class="feedback" id="dq-feedback" role="status" aria-live="polite"></p>
 </dialog>
 
-<script src="juegos.js?v=20261126e"></script>
-<script src="extras.js?v=20261126e"></script>
-<script src="app.js?v=20261126e"></script>
-<script src="config.js?v=20261126e"></script>
-<script src="ordinales.js?v=20261126e"></script>
-<script src="hora.js?v=20261126e"></script>
-<script src="paises.js?v=20261126e"></script>
-<script src="registro.js?v=20261126e"></script>
+<script src="juegos.js?v=20261126f"></script>
+<script src="extras.js?v=20261126f"></script>
+<script src="app.js?v=20261126f"></script>
+<script src="config.js?v=20261126f"></script>
+<script src="ordinales.js?v=20261126f"></script>
+<script src="hora.js?v=20261126f"></script>
+<script src="paises.js?v=20261126f"></script>
+<script src="registro.js?v=20261126f"></script>
 </body>
 </html>
