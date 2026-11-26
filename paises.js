@@ -423,12 +423,5 @@
     mount.replaceChildren(root); reglas();
   }
 
-  /* Subpestañas propias de Básico 1 (no usan .stab para no mezclarse con las de Básico 3) */
-  document.querySelectorAll('.stab2').forEach(bt => bt.addEventListener('click', () => {
-    document.querySelectorAll('.stab2').forEach(x => x.setAttribute('aria-selected', String(x === bt)));
-    document.querySelectorAll('.b1panel').forEach(pn => { pn.hidden = pn.dataset.b1 !== bt.dataset.b1; });
-    window.dispatchEvent(new Event('resize'));
-  }));
-
   initMapa(); initMemo(); initPasaporte(); initFicha(); initTrivia();
 })();
