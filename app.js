@@ -170,13 +170,14 @@ const PG = [
   ['ordena', 'Ordena', 10], ['sopa', 'Sopa', 10], ['sd', 'Saludos', 10], ['dial', 'Diálogos', 2],
   ['sust', 'Sustituye', 7], ['texto', 'Texto', 6], ['tabla', 'Tabla', 6], ['prac', 'Practiquemos', 32], ['escribe', 'Escribe', 33],
   ['serA', 'Ser A', 8], ['serB', 'Ser B', 17], ['serC', 'Ser C', 6], ['tenA', 'Tener A', 6], ['tenB', 'Tener B', 5], ['tenC', 'Anagramas', 4],
+  ['ordA', 'Ordinales A', 5], ['ordB', 'Ordinales B', 5], ['ordC', 'Ordinales C', 5],
   ['ruleta', 'Ruleta', RULETA.length],
 ];
 let score = {};
 /* Etiquetas de felicitación: salen cuando aciertas y al completar la actividad */
 const PRAISE = [['muybien', 'Muy bien'], ['buentrabajo', 'Buen trabajo'], ['felicitaciones', 'Felicitaciones']];
 const PRAISE_END = [['excelente', 'Excelente']];
-const ACT_BOX = { ordena: '#act-ordena', sopa: '#act-sopa', sd: '#act-sd', dial: '#act-dialogos', sust: '#act-sustituye', texto: '#act-texto', tabla: '#act-texto', prac: '#practice-mount', escribe: '#spellit-mount', serA: '#act-ser-a', serB: '#act-ser-b', serC: '#act-ser-c', tenA: '#act-ten-a', tenB: '#act-ten-b', tenC: '#act-ten-c', ruleta: '#wheel-mount' };
+const ACT_BOX = { ordena: '#act-ordena', sopa: '#act-sopa', sd: '#act-sd', dial: '#act-dialogos', sust: '#act-sustituye', texto: '#act-texto', tabla: '#act-texto', prac: '#practice-mount', escribe: '#spellit-mount', serA: '#act-ser-a', serB: '#act-ser-b', serC: '#act-ser-c', tenA: '#act-ten-a', tenB: '#act-ten-b', tenC: '#act-ten-c', ordA: '#act-ord-a', ordB: '#act-ord-b', ordC: '#act-ord-c', ruleta: '#wheel-mount' };
 let praiseTimer = null, praiseN = 0, endN = 0;
 function showPraise([img, text], big) {
   let el = $('#praise');

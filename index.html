@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20261122z4">
+<link rel="stylesheet" href="styles.css?v=20261126a">
 </head>
 <body>
 
@@ -319,6 +319,7 @@
       <button class="stab" role="tab" type="button" data-sub="ser" aria-selected="false">1. Verbo SER</button>
       <button class="stab" role="tab" type="button" data-sub="tener" aria-selected="false">2. Verbo TENER</button>
       <button class="stab" role="tab" type="button" data-sub="num" aria-selected="false">3. Números cardinales</button>
+      <button class="stab" role="tab" type="button" data-sub="ord" aria-selected="false">4. Números ordinales</button>
     </div>
 
     <!-- Pronombres -->
@@ -497,6 +498,109 @@
         <div id="act-tablero"></div>
       </div>
     </div>
+
+    <!-- Números ordinales -->
+    <div class="subpanel" data-sub="ord" hidden>
+      <h3 class="banner big">Los números ordinales</h3>
+      <p class="ord-sub">Usos, características y aplicaciones</p>
+
+      <div class="card">
+        <h4 class="pill-title">¿Qué son?</h4>
+        <p>Los números ordinales expresan un orden o una posición dentro de una serie.</p>
+        <div class="ord-ex">
+          <b>Ejemplos</b>
+          <ul>
+            <li><span>1.º</span> → primero</li>
+            <li><span>2.º</span> → segundo</li>
+            <li><span>3.º</span> → tercero</li>
+            <li><span>10.º</span> → décimo</li>
+          </ul>
+        </div>
+        <p class="ord-note">👉 A diferencia de los cardinales (1, 2, 3…) que indican cantidad, los ordinales indican posición.</p>
+      </div>
+
+      <div class="card ord-carac">
+        <button class="ord-toggle" id="ord-toggle" type="button" aria-expanded="false" aria-controls="ord-carac-body">
+          <span>Características principales</span><span class="ord-arrow" aria-hidden="true">▾</span>
+        </button>
+        <p class="ord-hint" id="ord-hint">Toca el botón para ver las características.</p>
+        <div id="ord-carac-body" class="ord-carac-body" hidden>
+          <ul class="ord-checks">
+            <li><span class="ck" aria-hidden="true">✓</span><span><b>Indican posición o jerarquía dentro de una secuencia.</b></span></li>
+            <li><span class="ck" aria-hidden="true">✓</span><span><b>Concuerdan en género y número, cambian según la palabra que acompañan:</b> si es femenino o masculino, y si es uno o varios (el segundo piso / la segunda puerta / los primeros días).</span></li>
+            <li><span class="ck" aria-hidden="true">✓</span><span><b>Pueden escribirse con palabras o con cifras:</b> quinto o 5.º.</span></li>
+          </ul>
+          <p class="ord-note">👉 <b>A partir de 11.º se recomienda escribirlos separados o con palabras:</b> décimo primero o 11.º.</p>
+        </div>
+      </div>
+
+      <div class="ord-two">
+        <div class="card">
+          <h4 class="pill-title">¿Cuándo los usamos?</h4>
+          <div class="scroll-x">
+          <table class="t ord-cuando">
+            <thead><tr><th>Situación</th><th>Ejemplo</th></tr></thead>
+            <tbody>
+              <tr><td>Posiciones en competencias</td><td>Quedó en primer lugar</td></tr>
+              <tr><td>Fechas y eventos</td><td>El 1.º de mayo</td></tr>
+              <tr><td>Pisos y niveles</td><td>Vive en el 3.º piso</td></tr>
+              <tr><td>Orden de lista</td><td>El 5.º alumno de la fila</td></tr>
+              <tr><td>Aniversarios</td><td>Su 25.º cumpleaños</td></tr>
+              <tr><td>Capítulos de libros</td><td>Capítulo 2.º</td></tr>
+              <tr><td>Sucesiones reales</td><td>El 2.º rey de la dinastía</td></tr>
+              <tr><td>Grados académicos</td><td>Estudiante de 4.º grado</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="card">
+          <h4 class="pill-title">Tabla de los primeros ordinales</h4>
+          <p class="ord-hint">👆 Toca un ordinal masculino para ver también el femenino.</p>
+          <div class="scroll-x">
+          <table class="t ord-tabla" id="ord-tabla">
+            <thead><tr><th>Cardinal</th><th>Ordinal (masc.)</th><th>Ordinal (fem.)</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card hl-key">
+        <h3>Puntos clave</h3>
+        <div class="ord-cards">
+          <div class="ord-tarjeta" role="group" aria-label="Puntos clave">
+            <p><b class="big-sign">º</b> si acompaña a un sustantivo masculino: <b>1.º, 2.º, 5.º</b></p>
+            <p><b class="big-sign">ª</b> si acompaña a un sustantivo femenino: <b>1.ª, 2.ª, 5.ª</b></p>
+            <p><b class="big-sign">er</b> en los casos <i>primer</i> y <i>tercer</i>: <b>1.er, 3.er</b></p>
+          </div>
+          <div class="ord-tarjeta" role="group" aria-label="En otras palabras">
+            <p class="ord-tt">En otras palabras:</p>
+            <p>Se usa <b>º / ª</b> según el género de la palabra a la que acompaña el ordinal, y para «primer» y «tercer» se escribe <b>er</b>.</p>
+          </div>
+        </div>
+        <h4>Ejemplos</h4>
+        <ul class="ord-eje">
+          <li>el <b>2.º</b> lugar → <b>segundo</b> lugar</li>
+          <li>la <b>2.ª</b> oportunidad → <b>segunda</b> oportunidad</li>
+          <li>el <b>1.er</b> día → <b>primer</b> día</li>
+          <li>el <b>3.er</b> puesto → <b>tercer</b> puesto</li>
+        </ul>
+      </div>
+
+      <h3 class="act-h">Actividades · Números ordinales</h3>
+      <div class="card act">
+        <div class="act-head"><h4>A. Une cada número ordinal con su nombre</h4><p>Arrastra cada palabra de las nubes hasta el número ordinal que corresponde.</p></div>
+        <div id="act-ord-a"></div>
+      </div>
+      <div class="card act">
+        <div class="act-head"><h4>B. Observa la fila y escribe el ordinal que corresponde</h4><p>Cuenta de izquierda a derecha. Fíjate en si es un hombre o una mujer.</p></div>
+        <div id="act-ord-b"></div>
+      </div>
+      <div class="card act">
+        <div class="act-head"><h4>C. Observa y responde</h4><p>Mira la carrera y responde con el número ordinal o con una descripción corta.</p></div>
+        <div id="act-ord-c"></div>
+      </div>
+    </div>
   </article>
 
   <!-- ---------- ACTIVIDADES EXTRAS ---------- -->
@@ -542,10 +646,11 @@
   <p class="feedback" id="dq-feedback" role="status" aria-live="polite"></p>
 </dialog>
 
-<script src="juegos.js?v=20261122z4"></script>
-<script src="extras.js?v=20261122z4"></script>
-<script src="app.js?v=20261122z4"></script>
-<script src="config.js?v=20261122z4"></script>
-<script src="registro.js?v=20261122z4"></script>
+<script src="juegos.js?v=20261126a"></script>
+<script src="extras.js?v=20261126a"></script>
+<script src="app.js?v=20261126a"></script>
+<script src="config.js?v=20261126a"></script>
+<script src="ordinales.js?v=20261126a"></script>
+<script src="registro.js?v=20261126a"></script>
 </body>
 </html>
